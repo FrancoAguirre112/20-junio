@@ -21,3 +21,20 @@ export interface Product {
   subCategory?: "LIO";
   slogan?: string;
 }
+
+// /types/blog.ts
+
+import type { ReactElement } from "react";
+
+export type BlogSection = {
+  title: string;
+  content: ReactElement;
+};
+
+export type BlogPost = {
+  id: string;
+  title: string;
+  description: string;
+  coverImage: string;
+  sections: BlogSection[];
+};
