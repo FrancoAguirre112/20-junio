@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { allBlogPosts } from "@/data/blog-posts";
+import { mainBlogPosts } from "@/data/blog-posts";
 
 /**
  * Helper para convertir un título en una URL amigable (slug).
- * Ejemplo: "Mantenga sus ojos sanos" -> "mantenga-sus-ojos-sanos"
  */
 const slugify = (text: string) => {
   return text
@@ -23,7 +22,7 @@ export default function SaludVisualPage() {
     <div className="bg-gray-50 min-h-screen">
       <main className="mt-20">
         {/* Encabezado de la página */}
-        <header className="flex justify-center items-center bg-[url(/assets/images/hero_eyes.jpg)] py-10">
+        <header className="flex justify-center items-center bg-[url(/assets/images/clouds.png)] py-10">
           <div className="bg-white p-5 rounded-lg">
             <h1 className="mb-4 font-bold text-gray-800 text-2xl md:text-3xl">
               Visión saludable
@@ -39,27 +38,22 @@ export default function SaludVisualPage() {
         </header>
 
         {/* Contenedor de las tarjetas de blog */}
-        <div className="space-y-8 mx-auto mt-10 max-w-4xl">
-          {allBlogPosts.map((post) => (
+        <div className="space-y-8 mx-auto mt-10 pb-20 max-w-4xl">
+          {mainBlogPosts.map((post) => (
             <Link
               key={post.title}
-              href={`/salud-visual/${slugify(post.title)}`}
-              className="group block" // 'group' permite efectos hover en elementos hijos
+              href={`/salud-visual/${slugify(post.id)}`}
+              className="group block"
             >
-              <article className="flex md:flex-row flex-col bg-white shadow-sm hover:shadow-lg border border-gray-200 rounded-lg overflow-hidden transition-shadow duration-300">
-                {/* Sección de la Imagen */}
-                <div className="relative w-full md:w-1/3 h-48 md:h-auto">
-                  <Image
-                    src={post.coverImage}
-                    alt={`Imagen de portada para ${post.title}`}
-                    fill // 'fill' hace que la imagen llene el contenedor
-                    style={{ objectFit: "cover" }} // Asegura que la imagen cubra el espacio sin distorsionarse
-                    className="group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
+              <article className="flex md:flex-row flex-col bg-white shadow-sm hover:shadow-lg border border-gray-200 rounded-lg h-56 overflow-hidden transition-shadow duration-300">
+                {/* --- SECCIÓN CORREGIDA --- */}
+                <div
+                  className="relative bg-cover w-1/3 h-full overflow-hidden"
+                  style={{ backgroundImage: `url(${post.coverImage})` }}
+                ></div>
 
                 {/* Sección del Contenido */}
-                <div className="flex flex-col p-6">
+                <div className="flex flex-col p-6 w-3/4">
                   <h2 className="mb-2 font-bold text-gray-900 text-2xl">
                     {post.title}
                   </h2>

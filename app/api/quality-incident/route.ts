@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server"; // 1. Import NextRequest
 import { submitQualityIncident } from "@/lib/supabase/actions";
 import { QualityIncidentSchema } from "@/lib/schemas";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // 2. Use NextRequest as the type
   try {
     // This form doesn't have a file upload, so we can parse JSON directly
     const jsonData = await request.json();
@@ -21,13 +22,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Get IP address
-    const ip = request.headers.get("x-forwarded-for") ?? request.ip;
+    // 2. FIX: Get IP address from headers
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown";
 
     // 3. Call the server-side action
     const result = await submitQualityIncident(
       validation.data,
-      ip || "unknown"
+      ip // Use the IP retrieved from headers
     );
 
     return NextResponse.json({ success: true, data: result });

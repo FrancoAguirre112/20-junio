@@ -98,7 +98,10 @@ export function QualityIncidentForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-10 w-full"
+      >
         {/* Section 1: Contact Info */}
         <div className="space-y-4">
           <h3 className="pb-2 border-b font-semibold text-xl">
@@ -544,7 +547,7 @@ export function QualityIncidentForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="p-6 w-full text-lg"
+          className="bg-main-500 hover:bg-main-500/90 p-6 w-full text-white text-lg hover:cursor-pointer"
         >
           {isSubmitting ? "Enviando..." : "Enviar Reporte de Incidencia"}
         </Button>

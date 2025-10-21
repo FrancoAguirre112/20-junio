@@ -2,15 +2,19 @@
 
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { allBlogPosts } from "@/data/blog-posts"; // Ajusta la ruta si es necesario
+import { allBlogPosts } from "@/data/blog-posts"; // Adjust path if needed
 
-// (Opcional pero recomendado) Función para generar metadata dinámica para SEO
+// --- CORRECTED METADATA FUNCTION ---
 export async function generateMetadata({
   params,
 }: {
-  params: { blog: string };
+  // 1. The 'params' prop is now typed as a Promise
+  params: Promise<{ blog: string }>;
 }) {
-  const post = allBlogPosts.find((p) => p.id === params.blog);
+  // 2. We must 'await' the params to get the slug value
+  const { blog } = await params;
+
+  const post = allBlogPosts.find((p) => p.id === blog);
 
   if (!post) {
     return {
@@ -24,69 +28,93 @@ export async function generateMetadata({
   };
 }
 
-// Genera las páginas estáticas en el momento de la compilación
+// generateStaticParams does NOT receive params, so it remains unchanged
 export async function generateStaticParams() {
   return allBlogPosts.map((post) => ({
     blog: post.id,
   }));
 }
 
-// Tipado para las props de la página
-type BlogPostPageProps = {
-  params: {
-    blog: string; // 'blog' coincide con el nombre de la carpeta [blog]
-  };
-};
+// --- CORRECTED PAGE COMPONENT ---
+export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise<{ blog: string }>;
+}) {
+  const { blog: slug } = await params;
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const { blog: slug } = params;
-
-  // Encontrar el post correspondiente al slug de la URL
   const post = allBlogPosts.find((p) => p.id === slug);
 
-  // Si no se encuentra ningún post, se renderiza la página 404 de Next.js
   if (!post) {
     notFound();
   }
 
   return (
-    <main className="mx-auto px-4 py-8 md:py-12 container">
-      <article className="mx-auto max-w-3xl">
-        <header className="mb-8 md:mb-12">
-          {/* Título del Post */}
-          <h1 className="mb-4 font-extrabold text-gray-900 text-3xl md:text-5xl leading-tight">
-            {post.title}
-          </h1>
-          {/* Descripción corta */}
-          <p className="text-gray-600 text-lg md:text-xl">{post.description}</p>
-        </header>
+    <main className="mt-20">
+      <div className="mx-auto px-4 py-8 md:py-12 container">
+        <article className="mx-auto max-w-3xl">
+          <header className="mb-8 md:mb-12">
+            <h1 className="mb-4 font-extrabold text-gray-900 text-3xl md:text-5xl leading-tight">
+              {post.title}
+            </h1>
+            <p className="text-gray-600 text-lg md:text-xl">
+              {post.description}
+            </p>
+          </header>
 
-        {/* Imagen de Portada */}
-        <div className="relative shadow-lg mb-8 md:mb-12 rounded-lg w-full h-64 md:h-96 overflow-hidden">
-          <Image
-            src={post.coverImage}
-            alt={`Imagen de portada para ${post.title}`}
-            fill
-            priority // Carga esta imagen con prioridad ya que es importante (LCP)
-            style={{ objectFit: "cover" }}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        </div>
+          {post.sectionIds && post.sectionIds.length > 0 && (
+            <nav className="mb-8 md:mb-12 py-4 border-gray-200 border-t border-b">
+              <h3 className="mb-2 font-bold text-gray-800 text-lg">
+                En esta página:
+              </h3>
+              <ul className="space-y-1">
+                {post.sectionIds.map((id) => {
+                  const section = post.sections.find((sec) => sec.id === id);
+                  if (!section) return null;
+                  return (
+                    <li key={id} className="ml-4">
+                      <a
+                        href={`#${id}`}
+                        className="text-blue-600 hover:underline"
+                      >
+                        {section.title}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          )}
 
-        {/* Contenido principal - Secciones */}
-        <div className="prose-li:my-1 max-w-none prose-a:text-blue-600 hover:prose-a:underline prose prose-lg">
-          {post.sections.map((section, index) => (
-            <section key={index} className="mb-8">
-              {/* Título de la Sección */}
-              <h2 className="mb-4 pb-2 border-gray-200 border-b font-bold text-2xl md:text-3xl">
-                {section.title}
-              </h2>
-              {/* Contenido de la Sección (que ya es un ReactElement) */}
-              <div>{section.content}</div>
-            </section>
-          ))}
-        </div>
-      </article>
+          {post.coverImage && (
+            <div className="relative shadow-lg mb-8 md:mb-12 rounded-lg w-full h-64 md:h-96 overflow-hidden">
+              <Image
+                src={post.coverImage}
+                alt={`Imagen de portada para ${post.title}`}
+                fill
+                priority
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            </div>
+          )}
+
+          <div className="prose-li:my-1 max-w-none prose-a:text-blue-600 hover:prose-a:underline prose prose-lg">
+            {post.sections.map((section) => (
+              <section
+                key={section.id}
+                id={section.id}
+                className="mb-8 scroll-mt-24"
+              >
+                <h2 className="mb-4 pb-2 border-gray-200 border-b font-bold text-2xl md:text-3xl">
+                  {section.title}
+                </h2>
+                <div>{section.content}</div>
+              </section>
+            ))}
+          </div>
+        </article>
+      </div>
     </main>
   );
 }

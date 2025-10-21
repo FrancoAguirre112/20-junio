@@ -18,6 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import Link from "next/link";
 
 export function QuoteForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -175,18 +176,29 @@ export function QuoteForm() {
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>
-                  Declaro haber leído y comprendido el
-                  <a href="/" className="underline">
-                    Aviso de Privacidad
-                  </a>
-                  y acepto el tratamiento de mis datos.
+                  <p>
+                    {" "}
+                    {/* Wrap the sentence in a <p> tag */}
+                    Declaro haber leído y comprendido el{" "}
+                    <Link
+                      href="/aviso-de-privacidad"
+                      className="text-sky-600 hover:text-sky-700 underline"
+                    >
+                      Aviso de Privacidad
+                    </Link>{" "}
+                    y acepto el tratamiento de mis datos.
+                  </p>
                 </FormLabel>
               </div>
             </FormItem>
           )}
         />
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-main-500 hover:bg-main-500/90 w-full text-white hover:cursor-pointer"
+        >
           {isSubmitting ? "Enviando..." : "Obtener Cotización"}
         </Button>
       </form>

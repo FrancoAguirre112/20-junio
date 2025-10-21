@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createHash } from "crypto";
@@ -10,6 +11,7 @@ const VerifySchema = z.object({
 
 // This is the most critical part: it re-creates the object that was originally hashed.
 // This must perfectly match the `incidentForDb` object in your actions.ts file.
+
 const createVerifiableObject = (reportData: any) => {
   return {
     contact_info: reportData.contact_info,

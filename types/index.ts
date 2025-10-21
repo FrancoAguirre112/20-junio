@@ -27,14 +27,17 @@ export interface Product {
 import type { ReactElement } from "react";
 
 export type BlogSection = {
+  id?: string;
   title: string;
   content: ReactElement;
 };
 
+// MODIFIED: Added the optional 'sectionIds' property.
 export type BlogPost = {
   id: string;
   title: string;
   description: string;
   coverImage: string;
   sections: BlogSection[];
+  sectionIds?: string[];
 };

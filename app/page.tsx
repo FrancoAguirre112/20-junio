@@ -14,16 +14,25 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
 import { useState, useEffect } from "react";
 import { type CarouselApi } from "@/components/ui/carousel";
+import { mainBlogPosts } from "@/data/blog-posts";
 
 // 1. Import the Fade plugin
 import Fade from "embla-carousel-fade";
 import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
+
+const slugify = (text: string) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-") // Replaces spaces with -
+    .replace(/[^\w\-]+/g, "") // Removes non-word chars
+    .replace(/\-\-+/g, "-"); // Replaces multiple - with single -
+};
 
 export default function HomePage() {
   const [api, setApi] = useState<CarouselApi>();
@@ -182,87 +191,85 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
         {/* Products Section */}
         <section id="products" className="bg-main-500 py-20">
           <div className="mx-auto px-4 text-center container">
             <h2 className="mb-12 font-bold text-white text-5xl">PRODUCTOS</h2>
             <div className="flex justify-between">
-              <div className="flex justify-center items-center bg-white hover:bg-[#0076BB] p-8 rounded-lg transition-all hover:cursor-pointer">
+              <div className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg transition-all hover:cursor-pointer">
                 <Image
                   src="/assets/images/insumos.webp"
                   alt="Intraocular Lenses"
                   width={350}
                   height={350}
-                  className="hover:brightness-0 hover:invert-100 mx-auto mb-4 transition-all"
+                  className="hover:brightness-0 hover:invert-100 p-8 aspect-square"
                 />
               </div>
-              <div className="flex justify-center items-center bg-white hover:bg-[#0076BB] p-8 rounded-lg transition-all hover:cursor-pointer">
+              <div className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg transition-all hover:cursor-pointer">
                 <Image
                   src="/assets/images/equipos.webp"
                   alt="Intraocular Lenses"
                   width={350}
                   height={350}
-                  className="hover:brightness-0 hover:invert-100 mx-auto mb-4 transition-all"
+                  className="hover:brightness-0 hover:invert-100 p-8 aspect-square"
                 />
               </div>
             </div>
           </div>
         </section>
-
         {/* Información Section */}
         <section id="informacion" className="bg-white py-20">
           <div className="mx-auto px-4 text-center container">
             <h2 className="mb-12 font-bold text-gray-700 text-5xl">
-              INFORMACIÓN
+              SALUD VISUAL
             </h2>
 
             <Carousel
               opts={{
                 align: "start",
+                loop: true, // Optional: makes the carousel loop
               }}
               className="w-full"
             >
               <CarouselContent className="-ml-4">
-                {/* We create an array of 6 items and map over it to generate the cards */}
-                {Array.from({ length: 6 }).map((_, index) => (
+                {/* We now map over your actual blog posts */}
+                {mainBlogPosts.map((post) => (
                   <CarouselItem
-                    key={index}
-                    // This is the key for showing 3 items:
-                    // basis-full on small screens, 1/2 on medium, and 1/3 on large.
+                    key={post.id} // Use a unique key from your data
                     className="pl-4 md:basis-1/2 lg:basis-1/3"
                   >
                     <div className="p-1 h-full">
-                      <Card className="flex flex-col rounded-lg h-full overflow-hidden text-left hover:cursor-pointer">
-                        <CardHeader className="p-0">
-                          <Image
-                            src="/assets/images/Placeholder.webp"
-                            alt="Blog post about eye health"
-                            width={400}
-                            height={250}
-                            className="w-full h-auto object-cover"
-                          />
-                        </CardHeader>
-                        <CardContent className="flex-grow p-6">
-                          <CardTitle className="mb-2 font-semibold text-gray-800 text-xl">
-                            Mantenga sus ojos sanos
-                          </CardTitle>
-                          <p className="text-gray-600 text-sm leading-relaxed">
-                            Hay muchas cosas que puede hacer para mantener sus
-                            ojos sanos y proteger su visión. Un examen es la
-                            mejor forma de detectar problemas.
-                          </p>
-                        </CardContent>
-                        <CardFooter className="p-6 pt-0">
-                          {/* The p-0 removes extra padding from the link-style button */}
-                          <Button
-                            variant="link"
-                            className="p-0 text-sky-600 hover:text-sky-700"
-                          >
-                            Leer Más
-                          </Button>
-                        </CardFooter>
-                      </Card>
+                      <Link
+                        href={`/salud-visual/${slugify(post.id)}`}
+                        className="group block h-full"
+                      >
+                        <Card className="flex flex-col group-hover:shadow-xl rounded-lg h-full overflow-hidden text-left transition-shadow duration-300">
+                          <CardHeader className="p-0">
+                            <Image
+                              src={post.coverImage}
+                              alt={post.title}
+                              width={400}
+                              height={250}
+                              className="w-full h-60 object-cover" // Added a fixed height for consistency
+                            />
+                          </CardHeader>
+                          <CardContent className="flex-grow p-6">
+                            <CardTitle className="mb-2 font-semibold text-gray-800 group-hover:text-sky-600 text-xl transition-colors">
+                              {post.title}
+                            </CardTitle>
+                            {/* Added line-clamp to ensure descriptions are a similar length */}
+                            <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
+                              {post.description}
+                            </p>
+                          </CardContent>
+                          <CardFooter className="p-6 pt-0">
+                            {/* The whole card is a link, so this acts as a visual cue */}
+                            <span className="font-semibold text-sky-600 group-hover:underline">
+                              Leer Más
+                            </span>
+                          </CardFooter>
+                        </Card>
+                      </Link>
                     </div>
                   </CarouselItem>
                 ))}
@@ -272,90 +279,8 @@ export default function HomePage() {
             </Carousel>
           </div>
         </section>
+        ;
       </main>
-      {/* Footer */}
-      <footer className="bg-white border-t border-t-gray-200 text-slate-700">
-        <div className="mx-auto px-4 py-10 container">
-          <div className="gap-12 grid md:grid-cols-3">
-            {/* Column 1: Logo */}
-            <div className="w-40">
-              {" "}
-              {/* A fixed width is often more reliable than dvw here */}
-              <Link href="/" passHref>
-                <Image
-                  src={"/assets/icons/Logo.webp"}
-                  alt="20 de Junio Logo"
-                  height={1000}
-                  width={1000}
-                  className="cursor-pointer"
-                />
-              </Link>
-            </div>
-
-            {/* Column 2: Navigation Links */}
-            <div>
-              <h4 className="mb-4 font-semibold uppercase tracking-wider">
-                Navegación
-              </h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Inicio
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/productos"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Productos
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/blog"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Column 3: Contact Information */}
-            <div>
-              <h4 className="mb-4 font-semibold uppercase tracking-wider">
-                Contacto
-              </h4>
-              <div className="space-y-2 text-sm">
-                <p>Campana 4689 - C1419AHM - CABA</p>
-                <p>
-                  <strong>Tel./Fax:</strong> 11 4571 9291
-                  <br />
-                  <strong>Cel.:</strong> 11 3172 9667
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Copyright */}
-          <div className="mt-12 pt-8 border-t border-t-gray-200 text-gray-500 text-sm text-center">
-            © {new Date().getFullYear()} 20 de Junio. Todos los derechos
-            reservados.
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

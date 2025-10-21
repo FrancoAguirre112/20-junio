@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server"; // 1. Import NextRequest
 import { submitQuote } from "@/lib/supabase/actions";
 import { QuoteFormSchema } from "@/lib/schemas";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  // 2. Use NextRequest as the type
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
@@ -30,11 +31,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Get the user's IP address
-    const ip = request.headers.get("x-forwarded-for") ?? request.ip;
+    // 2. FIX: Get the user's IP address from headers
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown";
 
     // 3. Call the server-side action to handle the submission
-    const result = await submitQuote(validation.data, file, ip || "unknown");
+    const result = await submitQuote(validation.data, file, ip);
 
     return NextResponse.json({ success: true, data: result });
   } catch (error) {

@@ -68,40 +68,30 @@ export default function ProductosPage() {
               {/* Insumos Category Card */}
               <div
                 onClick={() => handleCategoryClick("Insumos")}
-                className={`flex h-64 w-64 cursor-pointer flex-col items-center justify-center rounded-lg shadow-lg transition-all duration-300
+                className={`flex h-64 w-64 cursor-pointer flex-col items-center justify-center p-5 rounded-lg shadow-lg transition-all duration-300
                   ${selectedCategory === "Insumos" ? "bg-[#0069A8]" : "bg-white hover:bg-gray-50"}`}
               >
                 <Image
                   src="/assets/images/insumos.webp"
                   alt="Insumos Icon"
-                  width={120}
-                  height={120}
-                  className={`transition-all duration-300 ${selectedCategory === "Insumos" ? "brightness-0 invert" : ""}`}
+                  width={500}
+                  height={500}
+                  className={` w-full  ${selectedCategory === "Insumos" ? "brightness-0 invert" : ""}`}
                 />
-                <h3
-                  className={`mt-4 text-3xl font-bold tracking-widest ${selectedCategory === "Insumos" ? "text-white" : "text-[#0069A8]"}`}
-                >
-                  INSUMOS
-                </h3>
               </div>
               {/* Equipos Category Card */}
               <div
                 onClick={() => handleCategoryClick("Equipos")}
-                className={`flex h-64 w-64 cursor-pointer flex-col items-center justify-center rounded-lg shadow-lg transition-all duration-300
+                className={`flex h-64 w-64 cursor-pointer flex-col items-center justify-center p-5 rounded-lg shadow-lg transition-all duration-300
                   ${selectedCategory === "Equipos" ? "bg-[#0069A8]" : "bg-white hover:bg-gray-50"}`}
               >
                 <Image
                   src="/assets/images/equipos.webp"
                   alt="Equipos Icon"
-                  width={120}
-                  height={120}
-                  className={`transition-all duration-300 ${selectedCategory === "Equipos" ? "brightness-0 invert" : ""}`}
+                  width={500}
+                  height={500}
+                  className={` w-full  ${selectedCategory === "Equipos" ? "brightness-0 invert" : ""}`}
                 />
-                <h3
-                  className={`mt-4 text-3xl font-bold tracking-widest ${selectedCategory === "Equipos" ? "text-white" : "text-[#0069A8]"}`}
-                >
-                  EQUIPOS
-                </h3>
               </div>
             </div>
           </div>
@@ -156,7 +146,7 @@ export default function ProductosPage() {
                             src={product.icon}
                             alt={product.name}
                             fill
-                            className="group-hover:brightness-0 group-hover:invert object-contain transition-all duration-300"
+                            className="group-hover:brightness-0 group-hover:invert object-contain"
                           />
                         </div>
                       </div>
@@ -177,7 +167,7 @@ export default function ProductosPage() {
                           src={product.icon}
                           alt={product.name}
                           fill
-                          className="group-hover:brightness-0 group-hover:invert object-contain transition-all duration-300"
+                          className="group-hover:brightness-0 group-hover:invert object-contain"
                         />
                       </div>
                     </div>
@@ -196,7 +186,7 @@ export default function ProductosPage() {
                           src={product.icon}
                           alt={product.name}
                           fill
-                          className="group-hover:brightness-0 group-hover:invert object-contain transition-all duration-300"
+                          className="group-hover:brightness-0 group-hover:invert object-contain"
                         />
                       </div>
                     </div>

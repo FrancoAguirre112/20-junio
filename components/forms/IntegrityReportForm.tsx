@@ -121,7 +121,11 @@ export function IntegrityReportForm() {
           </FormControl>
           <FormMessage />
         </FormItem>
-        <Button type="submit" disabled={isSubmitting} className="w-full">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-main-500 hover:bg-main-500/90 w-full text-white hover:cursor-pointer"
+        >
           {isSubmitting ? "Enviando..." : "Enviar Reporte"}
         </Button>
       </form>
