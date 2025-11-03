@@ -1,19 +1,23 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react"; // 1. Importar useEffect
 import Image from "next/image";
+import { useRouter } from "next/navigation"; // 2. Importar useRouter
 import { PRODUCT_DATA } from "@/lib/product-data";
 import { Product } from "@/types/index";
 import ProductModal from "@/components/ProductModal";
 import { ArrowLeft } from "lucide-react";
 
 export default function ProductosPage() {
+  // 3. Inicializar el router
+  const router = useRouter();
+
   // State for the main category ('Insumos' or 'Equipos')
   const [selectedCategory, setSelectedCategory] = useState<
     "Insumos" | "Equipos" | null
   >(null);
 
-  // NEW: State for the sub-category view ('LIO')
+  // State for the sub-category view ('LIO')
   const [selectedSubCategory, setSelectedSubCategory] = useState<"LIO" | null>(
     null
   );
@@ -21,6 +25,28 @@ export default function ProductosPage() {
   // States for the modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // 4. LEER EL HASH DE LA URL AL CARGAR LA PÁGINA
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash === "#insumos") {
+      setSelectedCategory("Insumos");
+    } else if (hash === "#equipos") {
+      setSelectedCategory("Equipos");
+    }
+  }, []); // El array vacío asegura que esto solo se ejecute una vez
+
+  // 5. ACTUALIZAR LA URL CUANDO EL ESTADO CAMBIA
+  useEffect(() => {
+    if (selectedCategory === "Insumos") {
+      router.push("#insumos", { scroll: false });
+    } else if (selectedCategory === "Equipos") {
+      router.push("#equipos", { scroll: false });
+    } else {
+      // Limpia el hash de la URL si no hay nada seleccionado
+      router.replace(window.location.pathname, { scroll: false });
+    }
+  }, [selectedCategory, router]); // Se ejecuta cada vez que selectedCategory cambia
 
   const handleCategoryClick = (category: "Insumos" | "Equipos") => {
     setSelectedCategory((prev) => (prev === category ? null : category));
@@ -54,15 +80,11 @@ export default function ProductosPage() {
     []
   );
 
-  // Dynamic title for the product grid section
-  const gridTitle =
-    selectedSubCategory === "LIO" ? "Lentes Intraoculares" : selectedCategory;
-
   return (
     <>
-      <main className="">
-        {/* Category Selection Section with Blue Background */}
-        <section className="py-20">
+      <main className="mt-[5dvh]">
+        {/* 6. Añadir un ID para que el hash pueda apuntar aquí */}
+        <section id="seleccion" className="py-20">
           <div className="mx-auto px-4 text-center container">
             <div className="flex md:flex-row flex-col justify-center items-center gap-8">
               {/* Insumos Category Card */}
@@ -99,7 +121,12 @@ export default function ProductosPage() {
 
         {/* Conditionally Rendered Products Grid */}
         {selectedCategory && (
-          <section className="py-20">
+          <section
+            // --- ESTA LÍNEA ES LA EDICIÓN ---
+            id={selectedCategory?.toLowerCase()}
+            // ----------------------------------
+            className="py-20 scroll-mt-20" // Añadí scroll-mt-20 para un mejor espaciado al anclar
+          >
             <div className="mx-auto px-4 container">
               <div className="relative gap-4 mx-auto">
                 {/* BACK BUTTON: Shows only when viewing LIO products */}

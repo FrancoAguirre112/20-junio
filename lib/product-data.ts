@@ -42,7 +42,7 @@ export const PRODUCT_DATA: Product[] = [
     slogan: "Porque volver a ver bien, es volver a vivir plenamente.",
   },
   {
-    name: "Lio Monofocal torica",
+    name: "LIO Monofocal Tórica",
     icon: "/assets/icons/productos/lio_torica.png",
     tagline: "Lentes intraoculares monofocales tóricas de última generación",
     category: "Insumos",
@@ -118,7 +118,7 @@ export const PRODUCT_DATA: Product[] = [
       "Porque volver a ver bien en todas las distancias es volver a disfrutar plenamente cada momento.",
   },
   {
-    name: "Lio Multifocal Torica",
+    name: "LIO Multifocal Tórica",
     icon: "/assets/icons/productos/lio_multifocal_torica.png",
     tagline: "Lentes intraoculares trifocales tóricas de última generación",
     category: "Insumos",
@@ -156,7 +156,7 @@ export const PRODUCT_DATA: Product[] = [
       "Porque ver bien de lejos, intermedio y cerca, sin las limitaciones del astigmatismo, es volver a disfrutar cada momento con libertad y confianza.",
   },
   {
-    name: "Lio Edof",
+    name: "LIO EDOF",
     icon: "/assets/icons/productos/lio_edof.png",
     tagline: "Lentes intraoculares de visión extendida de última generación",
     category: "Insumos",
@@ -193,7 +193,7 @@ export const PRODUCT_DATA: Product[] = [
       "Porque ver bien de lejos y en la vida diaria, con menos dependencia de anteojos y sin comprometer la calidad visual, es volver a disfrutar cada momento con libertad.",
   },
   {
-    name: "Lio Edof Torica",
+    name: "LIO EDOF Tórica",
     icon: "/assets/icons/productos/lio_edof_torica.png",
     subCategory: "LIO",
     tagline:
@@ -285,9 +285,9 @@ export const PRODUCT_DATA: Product[] = [
     ],
   },
   {
-    name: "Viscoelastico oftalmico",
+    name: "Viscoelástico Oftálmico",
     icon: "/assets/icons/productos/visco_oft.png",
-    tagline: "Viscoelásticos oftálmicos: aliados en tu cirugía ocular",
+    tagline: "Aliados en tu cirugía ocular",
     category: "Insumos",
     description:
       "Durante una cirugía de cataratas o procedimientos en los ojos, el cirujano utiliza soluciones especiales llamadas viscoelásticos. Estas sustancias transparentes y seguras ayudan a proteger los tejidos delicados del ojo y a que la cirugía sea más precisa y segura.",
@@ -320,7 +320,7 @@ export const PRODUCT_DATA: Product[] = [
       "Contamos con diferentes opciones de viscoelásticos para adaptarnos a las necesidades de cada cirugía: desde los más densos y protectores, hasta los más fluidos y prácticos, siempre con la misma finalidad: cuidar tus ojos y garantizar el mejor resultado visual.",
   },
   {
-    name: "Aceite de silicona",
+    name: "Aceite de Silicona",
     icon: "/assets/icons/productos/aceite_silicona.png",
     tagline: "Aceite de silicona ocular para tu recuperación",
     category: "Insumos",
@@ -353,7 +353,7 @@ export const PRODUCT_DATA: Product[] = [
       "Porque mantener la retina en su lugar es la clave para volver a ver con claridad.",
   },
   {
-    name: "Perfluoro carbono",
+    name: "Perfluoro Carbono",
     icon: "/assets/icons/productos/perfluoro_carbono.png",
     tagline: "Un apoyo esencial en tu cirugía de retina",
     category: "Insumos",
@@ -428,7 +428,7 @@ export const PRODUCT_DATA: Product[] = [
       "Los gases intraoculares son herramientas diseñadas para darte la máxima seguridad y estabilidad, aumentando las posibilidades de una recuperación visual exitosa.",
   },
   {
-    name: "Microscopio quirurgico",
+    name: "Microscopio Quirúrgico",
     icon: "/assets/icons/productos/microscopio_quirurgico.png",
     tagline: "El microscopio que transforma la cirugía oftalmológica",
     category: "Equipos",
@@ -478,7 +478,7 @@ export const PRODUCT_DATA: Product[] = [
       "Este microscopio convierte cada procedimiento en una experiencia más segura, más eficiente y con resultados clínicos superiores. Porque cuando se trata de la visión de tus pacientes, no hay lugar para concesiones.",
   },
   {
-    name: "Laser quirurgico",
+    name: "Láser Quirúrgico",
     icon: "/assets/icons/productos/laser_quirurgico.png",
     tagline: "Láser quirúrgico para el cuidado de la retina",
     category: "Equipos",
@@ -510,7 +510,7 @@ export const PRODUCT_DATA: Product[] = [
     ],
   },
   {
-    name: "Sistema de visualizacion 3d",
+    name: "Sistema de Visualización 3D",
     icon: "/assets/icons/productos/sistema_3d.png",
     tagline: "El futuro de la cirugía oftalmológica, hoy",
     category: "Equipos",
@@ -518,35 +518,39 @@ export const PRODUCT_DATA: Product[] = [
       {
         title: "Ve lo que otros no pueden ver",
         content:
-          "Imagen 3D en ultra alta definición que revela cada detalle.\nHasta 5 veces más profundidad de campo que un microscopio tradicional.\nVisualizá la retina, la cápsula y los tejidos con una claridad sorprendente.\n👉 Más precisión. Más confianza. Mejores resultados.",
+          "Imagen 3D en ultra alta definición que revela cada detalle.\nHasta 5 veces más profundidad de campo que un microscopio tradicional.\nVisualizá la retina, la cápsula y los tejidos con una claridad sorprendente.\n Más precisión. Más confianza. Mejores resultados.",
       },
       {
         title: "Cirugías más seguras",
         content:
-          "Operá con menos luz intraocular: protegé los ojos de tus pacientes del riesgo de fototoxicidad.\nModos digitales inteligentes que se adaptan a cada necesidad:\n- Claridad extra en la cápsula.\n- Contraste optimizado con tintes verdes o azules.\n- Detalles invisibles a simple vista, ahora al alcance de tu mano.\n👉 Seguridad para tus pacientes, tranquilidad para vos.",
+          "Operá con menos luz intraocular: protegé los ojos de tus pacientes del riesgo de fototoxicidad.\nModos digitales inteligentes que se adaptan a cada necesidad:\n- Claridad extra en la cápsula.\n- Contraste optimizado con tintes verdes o azules.\n- Detalles invisibles a simple vista, ahora al alcance de tu mano.\n Seguridad para tus pacientes, tranquilidad para vos.",
       },
       {
         title: "Comodidad que cambia tu práctica",
         content:
-          "Cirugía heads-up: olvidate de la incomodidad de los oculares.\nPostura natural frente a una pantalla gigante.\nMenos fatiga, más concentración, más precisión.\n👉 Tu espalda lo agradece, tu rendimiento también.",
+          "Cirugía heads-up: olvidate de la incomodidad de los oculares.\nPostura natural frente a una pantalla gigante.\nMenos fatiga, más concentración, más precisión.\n Tu espalda lo agradece, tu rendimiento también.",
       },
       {
         title: "El poder del trabajo en equipo",
         content:
-          "Todo el quirófano ve lo mismo que vos, en tiempo real y en 3D.\nFacilitá la coordinación, la docencia y la formación de nuevos talentos.\nTransformá cada cirugía en una experiencia de aprendizaje compartido.\n👉 Vos operás, todos aprenden, el paciente gana.",
+          "Todo el quirófano ve lo mismo que vos, en tiempo real y en 3D.\nFacilitá la coordinación, la docencia y la formación de nuevos talentos.\nTransformá cada cirugía en una experiencia de aprendizaje compartido.\n Vos operás, todos aprenden, el paciente gana.",
       },
       {
         title: "Una herramienta que se adapta a vos",
         content:
-          "Integrá parámetros quirúrgicos en la pantalla.\nGrabá tus cirugías en 2D o 3D para enseñanza y análisis.\nCreá perfiles personalizados con tus modos favoritos.\n👉 Un sistema hecho a tu medida.",
+          "Integrá parámetros quirúrgicos en la pantalla.\nGrabá tus cirugías en 2D o 3D para enseñanza y análisis.\nCreá perfiles personalizados con tus modos favoritos.\n Un sistema hecho a tu medida.",
+      },
+      {
+        title: "¿Por qué elegirlo?",
+        content:
+          "Porque este sistema no es solo un microscopio, es un salto de generación.\n\nMás que una herramienta, es un nuevo estándar en cirugía oftalmológica:\n\n- Preciso.\n- Seguro\n- Cómodo\n- Colaborativo",
       },
     ],
-    conclusion: "¿Por qué elegirlo?",
-    slogan:
-      "Porque este sistema no es solo un microscopio, es un salto de generación. Más que una herramienta, es un nuevo estándar en cirugía oftalmológica: Preciso. Seguro. Cómodo. Colaborativo. 🔥 El futuro de la visualización quirúrgica está acá. Y te pone a vos y a tus pacientes un paso adelante.",
+    conclusion: "El futuro de la visualización quirúrgica está acá.",
+    slogan: "Y te pone a vos y a tus pacientes un paso adelante.",
   },
   {
-    name: "Sistema de facoemulsificacion para cirugia de catarata",
+    name: "Sistema de Facoemulsificación para Cirugía de Catarata",
     icon: "/assets/icons/productos/sistema_catarata.png",
     tagline: "La nueva era en cirugía de cataratas",
     category: "Equipos",
@@ -584,12 +588,12 @@ export const PRODUCT_DATA: Product[] = [
         ],
       },
     ],
-    conclusion: "En resumen:",
+    conclusion: " ",
     slogan:
       "Una plataforma que combina seguridad, eficacia y eficiencia, diseñada para que el cirujano tenga confianza total y el paciente logre los mejores resultados visuales posibles.",
   },
   {
-    name: "Biometro Optico",
+    name: "Biómetro Óptico",
     icon: "/assets/icons/productos/biometro_optico.png",
     tagline: "Precisión sin límites. Seguridad sin comparación.",
     category: "Equipos",
@@ -626,7 +630,7 @@ export const PRODUCT_DATA: Product[] = [
       "Un equipo creado para brindar seguridad total al paciente y eficacia indiscutida al cirujano. No es solo una herramienta: es la elección natural para quienes buscan resultados sin sorpresas.",
   },
   {
-    name: "Sistema de Vitrectomia para cirugia vitrorretiniana",
+    name: "Sistema Quirúrgico para Facovitrectomía",
     icon: "/assets/icons/productos/sistema_vitreorretiniana.png",
     tagline: "La excelencia en cirugía vítreo-retiniana",
     category: "Equipos",
@@ -639,7 +643,7 @@ export const PRODUCT_DATA: Product[] = [
       {
         title: "Precisión que marca la diferencia",
         content:
-          "La tecnología de corte de ultra-alta velocidad, combinada con un control independiente del flujo y vacío, permite al cirujano trabajar con una delicadeza inigualable.\n👉 Resultado: vitrectomías más rápidas, menos tracción retiniana y mayor protección para los tejidos frágiles.",
+          "La tecnología de corte de ultra-alta velocidad, combinada con un control independiente del flujo y vacío, permite al cirujano trabajar con una delicadeza inigualable.\n Resultado: vitrectomías más rápidas, menos tracción retiniana y mayor protección para los tejidos frágiles.",
       },
       {
         title: "Iluminación inteligente",

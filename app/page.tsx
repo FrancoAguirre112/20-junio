@@ -63,7 +63,6 @@ export default function HomePage() {
     <div className="bg-white overflow-hidden">
       {/* Hero Section */}
       <section className="relative w-full h-[70dvh]">
-        {/* ... your spinning images ... */}
         <div className="select-none">
           <Image
             className="top-1/2 left-1/2 z-20 absolute -translate-x-1/2 -translate-y-1/2"
@@ -196,7 +195,10 @@ export default function HomePage() {
           <div className="mx-auto px-4 text-center container">
             <h2 className="mb-12 font-bold text-white text-5xl">PRODUCTOS</h2>
             <div className="flex justify-between">
-              <div className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg transition-all hover:cursor-pointer">
+              <Link
+                href={"/productos#insumos"}
+                className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg transition-all hover:cursor-pointer"
+              >
                 <Image
                   src="/assets/images/insumos.webp"
                   alt="Intraocular Lenses"
@@ -204,8 +206,11 @@ export default function HomePage() {
                   height={350}
                   className="hover:brightness-0 hover:invert-100 p-8 aspect-square"
                 />
-              </div>
-              <div className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg transition-all hover:cursor-pointer">
+              </Link>
+              <Link
+                href={"/productos#equipos"}
+                className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg transition-all hover:cursor-pointer"
+              >
                 <Image
                   src="/assets/images/equipos.webp"
                   alt="Intraocular Lenses"
@@ -213,7 +218,7 @@ export default function HomePage() {
                   height={350}
                   className="hover:brightness-0 hover:invert-100 p-8 aspect-square"
                 />
-              </div>
+              </Link>
             </div>
           </div>
         </section>

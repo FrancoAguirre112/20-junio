@@ -9,10 +9,11 @@ import { Product, ProductSection } from "@/types/index"; // Adjust path as neede
 // Helper component to render section content (Unchanged)
 const ContentSection = ({ section }: { section: ProductSection }) => {
   return (
-    // Removed padding from here to be controlled by the Accordion.Content
     <div className="px-4 pt-2 pb-4">
       {typeof section.content === "string" ? (
-        <p className="text-gray-700 leading-relaxed">{section.content}</p>
+        <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+          {section.content}
+        </p>
       ) : (
         <ul className="space-y-2 ml-4 text-gray-700 list-disc">
           {section.content.map((item, index) => (
@@ -131,7 +132,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
               <div className="mt-6 px-4 pt-6 border-gray-200 border-t">
                 <p className="text-gray-800 italic">{product.conclusion}</p>
                 {product.slogan && (
-                  <p className="mt-4 font-semibold text-main-500 text-lg">
+                  <p className="mt-4 font-semibold text-main-500 text-lg leading-relaxed whitespace-pre-line">
                     {product.slogan}
                   </p>
                 )}

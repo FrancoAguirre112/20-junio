@@ -1,23 +1,52 @@
 // /app/salud-visual/page.tsx
 
 import Link from "next/link";
-import Image from "next/image";
-import { mainBlogPosts } from "@/data/blog-posts";
+import Image from "next/image"; // Usaremos Image para el fondo
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+
+// 1. Definimos los slugs de los 3 posts que queremos mostrar
+const mainPostSlugs = [
+  "mantenga-sus-ojos-sanos",
+  "como-funcionan-los-ojos",
+  "8-cosas-para-proteger-su-vision",
+];
 
 /**
- * Helper para convertir un título en una URL amigable (slug).
+ * Función para obtener solo los 3 posts principales.
+ * Lee el frontmatter de los archivos MDX especificados.
  */
-const slugify = (text: string) => {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-") // Reemplaza espacios con -
-    .replace(/[^\w\-]+/g, "") // Remueve caracteres no alfanuméricos
-    .replace(/\-\-+/g, "-"); // Reemplaza múltiples - con uno solo
-};
+function getMainBlogPosts() {
+  const postsDirectory = path.join(process.cwd(), "content");
+
+  const posts = mainPostSlugs.map((slug) => {
+    const filePath = path.join(postsDirectory, `${slug}.mdx`);
+    const fileContents = fs.readFileSync(filePath, "utf8");
+
+    // Usamos gray-matter para leer el frontmatter
+    const { data: frontmatter } = matter(fileContents);
+
+    return {
+      slug,
+      frontmatter: frontmatter as {
+        title: string;
+        description: string;
+        coverImage: string;
+      },
+    };
+  });
+
+  return posts;
+}
+
+// 2. Ya no necesitamos la función slugify,
+// el nombre del archivo es el slug.
 
 export default function SaludVisualPage() {
+  // 3. Obtenemos los posts desde nuestra nueva función
+  const mainBlogPosts = getMainBlogPosts();
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <main className="mt-20">
@@ -30,35 +59,41 @@ export default function SaludVisualPage() {
             <p className="mx-auto max-w-3xl text-gray-600 text-lg">
               Si usted siente los ojos saludables, es fácil asumir que están
               saludables. Sin embargo, muchas enfermedades de los ojos no tienen
-              señales de advertencia, por lo que usted podría tener un problema
-              en los ojos y no saberlo. ¡La buena noticia es que hay muchas
-              cosas que puede hacer para prepararse para ver bien toda la vida!
+              señales de advertencia...
             </p>
           </div>
         </header>
 
         {/* Contenedor de las tarjetas de blog */}
         <div className="space-y-8 mx-auto mt-10 pb-20 max-w-4xl">
+          {/* 4. Actualizamos el map para usar `post.slug` y `post.frontmatter` */}
           {mainBlogPosts.map((post) => (
             <Link
-              key={post.title}
-              href={`/salud-visual/${slugify(post.id)}`}
+              key={post.slug}
+              href={`/salud-visual/${post.slug}`} // Usamos el slug directamente
               className="group block"
             >
-              <article className="flex md:flex-row flex-col bg-white shadow-sm hover:shadow-lg border border-gray-200 rounded-lg h-56 overflow-hidden transition-shadow duration-300">
-                {/* --- SECCIÓN CORREGIDA --- */}
-                <div
-                  className="relative bg-cover w-1/3 h-full overflow-hidden"
-                  style={{ backgroundImage: `url(${post.coverImage})` }}
-                ></div>
+              <article className="flex md:flex-row flex-col bg-white shadow-sm hover:shadow-lg border border-gray-200 rounded-lg overflow-hidden transition-shadow duration-300">
+                {/* --- SECCIÓN DE IMAGEN CORREGIDA --- */}
+                {/* h-48 en móvil, w-1/3 y h-auto en desktop para que la altura se ajuste */}
+                <div className="relative w-full md:w-1/3 h-48 md:h-auto">
+                  <Image
+                    src={post.frontmatter.coverImage}
+                    alt={`Imagen de portada para ${post.frontmatter.title}`}
+                    fill
+                    style={{ objectFit: "cover" }}
+                    className="group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
 
-                {/* Sección del Contenido */}
-                <div className="flex flex-col p-6 w-3/4">
+                {/* --- SECCIÓN DE CONTENIDO CORREGIDA --- */}
+                {/* w-full en móvil, w-2/3 en desktop */}
+                <div className="flex flex-col p-6 w-full md:w-2/3">
                   <h2 className="mb-2 font-bold text-gray-900 text-2xl">
-                    {post.title}
+                    {post.frontmatter.title}
                   </h2>
                   <p className="flex-grow mb-4 text-gray-600">
-                    {post.description}
+                    {post.frontmatter.description}
                   </p>
                   <span className="flex items-center self-start font-semibold text-blue-600 group-hover:underline">
                     Obtenga más información

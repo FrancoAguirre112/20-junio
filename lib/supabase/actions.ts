@@ -32,12 +32,16 @@ const notificationRecipient = process.env.NOTIFICATION_EMAIL;
 /**
  * Handles the "Get a Quote" form submission.
  */
+/**
+ * Handles the "Get a Quote" form submission.
+ */
 export const submitQuote = async (
   formData: QuoteFormData,
   file: File | null,
   ipAddress: string
 ) => {
   let prescriptionFilePath: string | null = null;
+  let publicUrl = "";
 
   if (file) {
     const uniqueFileName = `${uuidv4()}-${file.name}`;
@@ -45,12 +49,24 @@ export const submitQuote = async (
       .from("prescriptions")
       .upload(uniqueFileName, file);
     if (uploadError) throw new Error("Failed to upload prescription file.");
+
     prescriptionFilePath = uniqueFileName;
+
+    const { data: urlData } = supabaseServerClient.storage
+      .from("prescriptions")
+      .getPublicUrl(uniqueFileName);
+
+    if (urlData) {
+      publicUrl = urlData.publicUrl;
+    } else {
+      console.warn("Could not get public URL for file:", uniqueFileName);
+    }
   }
 
   const { data: newQuote, error: insertError } = await supabaseServerClient
     .from("cotizaciones")
     .insert({
+      // ... (your insert data) ...
       full_name: formData.fullName,
       phone: formData.phone,
       email: formData.email,
@@ -66,11 +82,67 @@ export const submitQuote = async (
   if (insertError) throw new Error("Failed to save quote request.");
 
   if (notificationRecipient) {
+    // This is working
     await sendEmail({
       to: notificationRecipient,
       subject: `Nueva Solicitud de Cotización de ${formData.fullName}`,
-      react: QuoteConfirmationEmail({ ...formData }),
+      react: QuoteConfirmationEmail({ ...formData, fileUrl: publicUrl }),
     });
+  }
+
+  // --- NEW DEBUG LOGS ---
+  console.log("--- STARTING WHATSAPP NOTIFICATION ---");
+  const apiKey = process.env.TEXTMEBOT_API_KEY;
+  const recipient = process.env.MY_WHATSAPP_NUMBER;
+
+  console.log("File Public URL:", publicUrl || "No File Uploaded");
+  console.log(
+    "TextMeBot API Key:",
+    apiKey ? `...${apiKey.slice(-4)}` : "NOT FOUND"
+  ); // Logs last 4 chars
+  console.log("Recipient Number:", recipient || "NOT FOUND");
+  // --- END DEBUG LOGS ---
+
+  try {
+    if (apiKey && recipient) {
+      let message = `*Nueva Cotización Recibida* \n\n`;
+      message += `*Nombre:* ${formData.fullName}\n`;
+      message += `*Teléfono:* ${formData.phone}\n`;
+      message += `*Email:* ${formData.email || "No provisto"}\n`;
+      message += `*Observaciones:* ${formData.observations || "Ninguna"}\n`;
+
+      const encodedMessage = encodeURIComponent(message);
+      let textMeBotUrl = `https://api.textmebot.com/send.php?recipient=${recipient}&apikey=${apiKey}&text=${encodedMessage}`;
+
+      if (publicUrl) {
+        const encodedFileUrl = encodeURIComponent(publicUrl);
+        textMeBotUrl += `&document=${encodedFileUrl}`;
+      }
+
+      // --- NEW DEBUG LOG ---
+      console.log(
+        "Calling TextMeBot URL:",
+        textMeBotUrl.replace(apiKey, "REDACTED_KEY")
+      );
+      // --- END DEBUG LOG ---
+
+      fetch(textMeBotUrl).then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text();
+          console.error("TextMeBot API Error:", text);
+        } else {
+          // --- NEW DEBUG LOG ---
+          // Let's see the success response too
+          const text = await res.text();
+          console.log("TextMeBot Success Response:", text);
+          // --- END DEBUG LOG ---
+        }
+      });
+    } else {
+      console.warn("TextMeBot env variables (API_KEY or NUMBER) are not set.");
+    }
+  } catch (botError) {
+    console.error("Failed to send WhatsApp notification:", botError);
   }
 
   return newQuote;
