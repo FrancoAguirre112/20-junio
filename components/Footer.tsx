@@ -27,14 +27,17 @@ const legalLinks = [
 // --- NEW: Added your requested compliance links ---
 const complianceLinks = [
   {
-    href: "/gestion-incidencias-calidad",
+    href: "/gestion-de-incidencias-de-calidad",
     label: "Gestión de Incidencias de Calidad",
   },
   {
-    href: "/canal-integridad-gestion-no-conformidades",
+    href: "/canal-de-integridad",
     label: "Canal de Integridad y Gestión de No Conformidades",
   },
-  { href: "/codigo-de-etica", label: "Código de Ética" },
+  {
+    href: "/assets/20 DE JUNIO - CODIGO DE ETICA.pdf",
+    label: "Código de Ética",
+  },
 ];
 
 export default function Footer() {
