@@ -1,120 +1,206 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Facebook,
+  Instagram,
+  Linkedin,
+} from "lucide-react";
 
-const Footer = () => {
+// The same navigation links from your navbar for consistency
+const navLinks = [
+  { href: "/", label: "Inicio" },
+  { href: "/sobre-nosotros", label: "Nuestra Historia y Propósito" },
+  { href: "/productos", label: "Productos" },
+  { href: "/salud-visual", label: "Salud Visual" },
+  { href: "/cotizacion", label: "Obtener Cotización" },
+];
+
+// Your legal links
+const legalLinks = [
+  { href: "/aviso-de-privacidad", label: "Aviso de Privacidad" },
+  // { href: "/terminos-y-condiciones", label: "Términos y Condiciones" },
+];
+
+// --- NEW: Added your requested compliance links ---
+const complianceLinks = [
+  {
+    href: "/gestion-incidencias-calidad",
+    label: "Gestión de Incidencias de Calidad",
+  },
+  {
+    href: "/canal-integridad-gestion-no-conformidades",
+    label: "Canal de Integridad y Gestión de No Conformidades",
+  },
+  { href: "/codigo-de-etica", label: "Código de Ética" },
+];
+
+export default function Footer() {
   return (
-    <footer className="bg-white border-t border-t-gray-200 text-slate-700">
-      <div className="mx-auto px-4 py-10 container">
-        <div className="flex justify-between gap-12">
-          {/* Column 1: Logo */}
-          <div className="w-40">
-            {" "}
-            {/* A fixed width is often more reliable than dvw here */}
+    <footer className="bg-white border-gray-200 border-t text-black">
+      <div className="mx-auto px-4 py-12 container">
+        {/* Main grid. On desktop (md) it's 4 columns. 
+          On mobile, it's 1 column.
+        */}
+        <div className="gap-8 grid grid-cols-1 md:grid-cols-4">
+          {/* 1. Brand/Logo Section 
+              - items-center (mobile) centers the logo.
+              - md:items-start (desktop) aligns it left.
+          */}
+          <div className="flex flex-col items-center md:items-start md:col-span-1">
             <Link href="/" passHref>
-              <Image
-                src={"/assets/icons/Logo.webp"}
-                alt="20 de Junio Logo"
-                height={1000}
-                width={1000}
-                className="cursor-pointer"
-              />
+              <div className="flex items-center gap-2 -ml-[10dvw] max-w-[30dvw] md:max-w-[10dvw] cursor-pointer">
+                <Image
+                  src={"/assets/icons/Logo-1.png"}
+                  alt="20 de junio"
+                  height={1000}
+                  width={1000}
+                  className="w-1/3"
+                />
+                <Image
+                  src={"/assets/icons/Logo-2.png"}
+                  alt="20 de junio"
+                  height={1000}
+                  width={1000}
+                  className=""
+                />
+              </div>
             </Link>
           </div>
 
-          {/* Column 2: Navigation Links */}
-          <div>
-            <h4 className="mb-4 font-semibold uppercase tracking-wider">
+          {/* 2. Navigation Links 
+              - text-center (mobile) centers the heading and links.
+              - md:text-left (desktop) aligns them left.
+          */}
+          <div className="md:text-left text-center">
+            <h3 className="mb-4 font-bold text-sm uppercase tracking-wider">
               Navegación
-            </h4>
-            <div className="flex gap-2">
-              <ul className="space-y-2">
-                <li>
+            </h3>
+            <ul className="space-y-2">
+              {navLinks.map((link) => (
+                <li key={link.href}>
                   <Link
-                    href="/"
-                    className="hover:text-sky-600 transition-colors"
+                    href={link.href}
+                    className="hover:text-gray-500 transition-colors"
                   >
-                    Inicio
+                    {link.label}
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href="/productos"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Productos
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/salud-visual"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Salud Visual
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/cotizacion"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Obtener Cotización
-                  </Link>
-                </li>
-              </ul>
-
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href="/gestion-de-incidencias-de-calidad"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Gestión de Incidencias de Calidad
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/canal-de-integridad"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Canal de Integridad y Gestión de No Conformidades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/assets/20 DE JUNIO - CODIGO DE ETICA.pdf"
-                    className="hover:text-sky-600 transition-colors"
-                  >
-                    Código de Ética
-                  </Link>
-                </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
 
-          {/* Column 3: Contact Information */}
-          <div>
-            <h4 className="mb-4 font-semibold uppercase tracking-wider">
+          {/* 3. Contact Info 
+              - text-center (mobile) centers heading.
+              - md:text-left (desktop) aligns left.
+              - List items use justify-center (mobile) and md:justify-start (desktop).
+          */}
+          <div className="md:text-left text-center">
+            <h3 className="mb-4 font-bold text-sm uppercase tracking-wider">
               Contacto
-            </h4>
-            <div className="space-y-2 text-sm">
-              <p>Campana 4689 - C1419AHM - CABA</p>
-              <p>
-                <strong>Tel./Fax:</strong> 11 4571 9291
-                <br />
-                <strong>Cel.:</strong> 11 3172 9667
-              </p>
+            </h3>
+            <ul className="space-y-3">
+              <li className="flex justify-center md:justify-start items-center gap-2">
+                <Phone size={18} />
+                <a href="tel:+541126590757" className="hover:text-gray-500">
+                  +54 11 2659-0757
+                </a>
+              </li>
+              <li className="flex justify-center md:justify-start items-center gap-2">
+                <Mail size={18} />
+                <a
+                  href="mailto:info@tuempresa.com"
+                  className="hover:text-gray-500"
+                >
+                  info@tuempresa.com
+                </a>
+              </li>
+              <li className="flex justify-center md:justify-start items-center gap-2">
+                <MapPin size={18} />
+                <span>Av. Corrientes 1234, CABA</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* 4. Social & Legal Links 
+              - text-center (mobile) / md:text-left (desktop)
+              - Social icons use justify-center (mobile) / md:justify-start (desktop)
+          */}
+          <div className="md:text-left text-center">
+            <h3 className="mb-4 font-bold text-sm uppercase tracking-wider">
+              Complimiento
+            </h3>
+            <ul className="space-y-2 mb-6">
+              {/* --- NEW LINKS ADDED HERE --- */}
+              {complianceLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="hover:text-gray-500 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              {/* --- EXISTING LEGAL LINKS --- */}
+              {legalLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="hover:text-gray-500 transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <h3 className="mb-4 font-bold text-sm uppercase tracking-wider">
+              Redes
+            </h3>
+            <div className="flex justify-center md:justify-start space-x-4">
+              <Link
+                href="#"
+                aria-label="Facebook"
+                className="hover:text-gray-500 transition-colors"
+              >
+                <Facebook size={24} />
+              </Link>
+              <Link
+                href="#"
+                aria-label="Instagram"
+                className="hover:text-gray-500 transition-colors"
+              >
+                <Instagram size={24} />
+              </Link>
+              <Link
+                href="#"
+                aria-label="LinkedIn"
+                className="hover:text-gray-500 transition-colors"
+              >
+                <Linkedin size={24} />
+              </Link>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-t-gray-200 text-gray-500 text-sm text-center">
-          © {new Date().getFullYear()} 20 de Junio. Todos los derechos
-          reservados.
+      {/* Bottom Copyright Bar 
+          - Changed border-gray-700 to border-gray-200
+          - Changed text-gray-400 to text-gray-500
+          - items-center will center the text on mobile
+          - Removed extra link to keep it clean
+      */}
+      <div className="mt-8 py-6 border-gray-200 border-t">
+        <div className="flex flex-col justify-center items-center mx-auto px-4 text-gray-500 text-sm container">
+          <p>
+            &copy; {new Date().getFullYear()} 20 de Junio. Todos los derechos
+            reservados.
+          </p>
         </div>
       </div>
     </footer>
   );
-};
-
-export default Footer;
+}

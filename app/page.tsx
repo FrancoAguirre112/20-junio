@@ -197,7 +197,7 @@ export default function HomePage() {
             <div className="flex justify-between">
               <Link
                 href={"/productos#insumos"}
-                className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg transition-all hover:cursor-pointer"
+                className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg w-[40dvw] md:w-auto transition-all hover:cursor-pointer"
               >
                 <Image
                   src="/assets/images/insumos.webp"
@@ -209,7 +209,7 @@ export default function HomePage() {
               </Link>
               <Link
                 href={"/productos#equipos"}
-                className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg transition-all hover:cursor-pointer"
+                className="flex justify-center items-center bg-white hover:bg-[#0076BB] rounded-lg w-[40dvw] md:w-auto transition-all hover:cursor-pointer"
               >
                 <Image
                   src="/assets/images/equipos.webp"

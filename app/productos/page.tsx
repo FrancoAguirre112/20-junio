@@ -1,32 +1,25 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react"; // 1. Importar useEffect
+import { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // 2. Importar useRouter
+import { useRouter } from "next/navigation";
 import { PRODUCT_DATA } from "@/lib/product-data";
 import { Product } from "@/types/index";
 import ProductModal from "@/components/ProductModal";
 import { ArrowLeft } from "lucide-react";
 
 export default function ProductosPage() {
-  // 3. Inicializar el router
   const router = useRouter();
 
-  // State for the main category ('Insumos' or 'Equipos')
   const [selectedCategory, setSelectedCategory] = useState<
     "Insumos" | "Equipos" | null
   >(null);
-
-  // State for the sub-category view ('LIO')
   const [selectedSubCategory, setSelectedSubCategory] = useState<"LIO" | null>(
     null
   );
-
-  // States for the modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  // 4. LEER EL HASH DE LA URL AL CARGAR LA PÁGINA
   useEffect(() => {
     const hash = window.location.hash;
     if (hash === "#insumos") {
@@ -34,23 +27,20 @@ export default function ProductosPage() {
     } else if (hash === "#equipos") {
       setSelectedCategory("Equipos");
     }
-  }, []); // El array vacío asegura que esto solo se ejecute una vez
+  }, []);
 
-  // 5. ACTUALIZAR LA URL CUANDO EL ESTADO CAMBIA
   useEffect(() => {
     if (selectedCategory === "Insumos") {
       router.push("#insumos", { scroll: false });
     } else if (selectedCategory === "Equipos") {
       router.push("#equipos", { scroll: false });
     } else {
-      // Limpia el hash de la URL si no hay nada seleccionado
       router.replace(window.location.pathname, { scroll: false });
     }
-  }, [selectedCategory, router]); // Se ejecuta cada vez que selectedCategory cambia
+  }, [selectedCategory, router]);
 
   const handleCategoryClick = (category: "Insumos" | "Equipos") => {
     setSelectedCategory((prev) => (prev === category ? null : category));
-    // When changing main category, always reset the sub-category view
     setSelectedSubCategory(null);
   };
 
@@ -63,7 +53,6 @@ export default function ProductosPage() {
     setIsModalOpen(false);
   };
 
-  // Memoized lists for better performance
   const generalInsumos = useMemo(
     () =>
       PRODUCT_DATA.filter((p) => p.category === "Insumos" && !p.subCategory),
@@ -83,36 +72,58 @@ export default function ProductosPage() {
   return (
     <>
       <main className="mt-[5dvh]">
-        {/* 6. Añadir un ID para que el hash pueda apuntar aquí */}
         <section id="seleccion" className="py-20">
           <div className="mx-auto px-4 text-center container">
-            <div className="flex md:flex-row flex-col justify-center items-center gap-8">
+            {/* --- CHANGED --- 
+              Made this flex-row to be side-by-side on mobile
+            */}
+            <div className="flex flex-row justify-center items-center gap-8">
               {/* Insumos Category Card */}
               <div
                 onClick={() => handleCategoryClick("Insumos")}
-                className={`flex h-64 w-64 cursor-pointer flex-col items-center justify-center p-5 rounded-lg shadow-lg transition-all duration-300
-                  ${selectedCategory === "Insumos" ? "bg-[#0069A8]" : "bg-white hover:bg-gray-50"}`}
+                // --- CHANGED ---
+                // Made card smaller, responsive, and square
+                className={`flex w-2/5 max-w-56 aspect-square cursor-pointer flex-col items-center justify-center p-5 rounded-lg shadow-lg transition-all duration-300
+                  ${
+                    selectedCategory === "Insumos"
+                      ? "bg-[#0069A8]"
+                      : "bg-white hover:bg-gray-50"
+                  }`}
               >
                 <Image
                   src="/assets/images/insumos.webp"
                   alt="Insumos Icon"
                   width={500}
                   height={500}
-                  className={` w-full  ${selectedCategory === "Insumos" ? "brightness-0 invert" : ""}`}
+                  // --- CHANGED ---
+                  // Added h-full and object-contain
+                  className={`w-full h-full object-contain ${
+                    selectedCategory === "Insumos" ? "brightness-0 invert" : ""
+                  }`}
                 />
               </div>
               {/* Equipos Category Card */}
               <div
                 onClick={() => handleCategoryClick("Equipos")}
-                className={`flex h-64 w-64 cursor-pointer flex-col items-center justify-center p-5 rounded-lg shadow-lg transition-all duration-300
-                  ${selectedCategory === "Equipos" ? "bg-[#0069A8]" : "bg-white hover:bg-gray-50"}`}
+                // --- CHANGED ---
+                // Made card smaller, responsive, and square
+                className={`flex w-2/5 max-w-56 aspect-square cursor-pointer flex-col items-center justify-center p-5 rounded-lg shadow-lg transition-all duration-300
+                  ${
+                    selectedCategory === "Equipos"
+                      ? "bg-[#0069A8]"
+                      : "bg-white hover:bg-gray-50"
+                  }`}
               >
                 <Image
                   src="/assets/images/equipos.webp"
                   alt="Equipos Icon"
                   width={500}
                   height={500}
-                  className={` w-full  ${selectedCategory === "Equipos" ? "brightness-0 invert" : ""}`}
+                  // --- CHANGED ---
+                  // Added h-full and object-contain
+                  className={`w-full h-full object-contain ${
+                    selectedCategory === "Equipos" ? "brightness-0 invert" : ""
+                  }`}
                 />
               </div>
             </div>
@@ -122,10 +133,8 @@ export default function ProductosPage() {
         {/* Conditionally Rendered Products Grid */}
         {selectedCategory && (
           <section
-            // --- ESTA LÍNEA ES LA EDICIÓN ---
             id={selectedCategory?.toLowerCase()}
-            // ----------------------------------
-            className="py-20 scroll-mt-20" // Añadí scroll-mt-20 para un mejor espaciado al anclar
+            className="py-20 scroll-mt-20"
           >
             <div className="mx-auto px-4 container">
               <div className="relative gap-4 mx-auto">
@@ -141,7 +150,10 @@ export default function ProductosPage() {
                 )}
               </div>
 
-              <div className="flex gap-4">
+              {/* --- CHANGED ---
+                Changed from "flex" to a responsive "grid" 
+              */}
+              <div className="gap-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {/* LOGIC FOR RENDERING THE CORRECT GRID */}
 
                 {/* VIEW 1: Main 'Insumos' view */}
@@ -150,7 +162,8 @@ export default function ProductosPage() {
                     {/* Special Card to enter the LIO sub-category */}
                     <div
                       onClick={() => setSelectedSubCategory("LIO")}
-                      className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg w-64 aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
+                      // --- CHANGED --- Removed "w-64"
+                      className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
                     >
                       <div className="relative w-full h-full">
                         <Image
@@ -166,7 +179,8 @@ export default function ProductosPage() {
                       <div
                         key={product.name}
                         onClick={() => openModal(product)}
-                        className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg w-64 aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
+                        // --- CHANGED --- Removed "w-64"
+                        className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
                       >
                         <div className="relative w-full h-full">
                           <Image
@@ -187,7 +201,8 @@ export default function ProductosPage() {
                     <div
                       key={product.name}
                       onClick={() => openModal(product)}
-                      className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg w-64 aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
+                      // --- CHANGED --- Removed "w-64"
+                      className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
                     >
                       <div className="relative w-full h-full">
                         <Image
@@ -206,7 +221,8 @@ export default function ProductosPage() {
                     <div
                       key={product.name}
                       onClick={() => openModal(product)}
-                      className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg w-64 aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
+                      // --- CHANGED --- Removed "w-64"
+                      className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
                     >
                       <div className="relative w-full h-full">
                         <Image

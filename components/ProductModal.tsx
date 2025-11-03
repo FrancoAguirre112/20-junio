@@ -49,7 +49,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
       {/* Modal panel */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`relative flex h-full w-[70dvw] flex-col bg-white shadow-2xl transform transition-transform duration-500 ease-in-out
+        className={`relative flex h-full md:w-[70dvw] flex-col bg-white shadow-2xl transform transition-transform duration-500 ease-in-out
           ${isOpen ? "translate-y-0" : "translate-y-full"}
         `}
       >
