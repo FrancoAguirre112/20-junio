@@ -20,28 +20,68 @@ export default function ProductosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
+  // This hook for initial load from hash is correct.
   useEffect(() => {
     const hash = window.location.hash;
     if (hash === "#insumos") {
       setSelectedCategory("Insumos");
+      // Optional: Scroll on initial load as well
+      setTimeout(() => {
+        document
+          .getElementById("insumos")
+          ?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     } else if (hash === "#equipos") {
       setSelectedCategory("Equipos");
+      // Optional: Scroll on initial load as well
+      setTimeout(() => {
+        document
+          .getElementById("equipos")
+          ?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
   }, []);
 
+  // --- ⬇️ MODIFIED THIS HOOK ⬇️ ---
+  // This hook now handles both updating the URL hash AND
+  // triggering the smooth scroll to the correct section.
   useEffect(() => {
+    let hash = "";
     if (selectedCategory === "Insumos") {
-      router.push("#insumos", { scroll: false });
+      hash = "#insumos";
     } else if (selectedCategory === "Equipos") {
-      router.push("#equipos", { scroll: false });
+      hash = "#equipos";
+    }
+
+    // 1. Update the URL hash without letting the router scroll
+    if (hash) {
+      router.push(hash, { scroll: false });
     } else {
+      // If no category, remove the hash from the URL
       router.replace(window.location.pathname, { scroll: false });
     }
+
+    // 2. Manually trigger the smooth scroll
+    if (selectedCategory) {
+      // We use a small timeout. This waits for React to re-render
+      // and for the new <section> to be added to the DOM.
+      const timer = setTimeout(() => {
+        const element = document.getElementById(selectedCategory.toLowerCase());
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 50); // 50ms is usually a safe delay
+
+      // Clear the timer if the component unmounts or state changes again
+      return () => clearTimeout(timer);
+    }
   }, [selectedCategory, router]);
+  // --- ⬆️ END OF MODIFIED HOOK ⬆️ ---
 
   const handleCategoryClick = (category: "Insumos" | "Equipos") => {
     setSelectedCategory((prev) => (prev === category ? null : category));
     setSelectedSubCategory(null);
+    // The useEffect above will handle the scrolling
   };
 
   const openModal = (product: Product) => {
@@ -74,15 +114,10 @@ export default function ProductosPage() {
       <main className="mt-[5dvh]">
         <section id="seleccion" className="py-20">
           <div className="mx-auto px-4 text-center container">
-            {/* --- CHANGED --- 
-              Made this flex-row to be side-by-side on mobile
-            */}
             <div className="flex flex-row justify-center items-center gap-8">
               {/* Insumos Category Card */}
               <div
                 onClick={() => handleCategoryClick("Insumos")}
-                // --- CHANGED ---
-                // Made card smaller, responsive, and square
                 className={`flex w-2/5 max-w-56 aspect-square cursor-pointer flex-col items-center justify-center p-5 rounded-lg shadow-lg transition-all duration-300
                   ${
                     selectedCategory === "Insumos"
@@ -95,8 +130,6 @@ export default function ProductosPage() {
                   alt="Insumos Icon"
                   width={500}
                   height={500}
-                  // --- CHANGED ---
-                  // Added h-full and object-contain
                   className={`w-full h-full object-contain ${
                     selectedCategory === "Insumos" ? "brightness-0 invert" : ""
                   }`}
@@ -105,8 +138,6 @@ export default function ProductosPage() {
               {/* Equipos Category Card */}
               <div
                 onClick={() => handleCategoryClick("Equipos")}
-                // --- CHANGED ---
-                // Made card smaller, responsive, and square
                 className={`flex w-2/5 max-w-56 aspect-square cursor-pointer flex-col items-center justify-center p-5 rounded-lg shadow-lg transition-all duration-300
                   ${
                     selectedCategory === "Equipos"
@@ -119,8 +150,6 @@ export default function ProductosPage() {
                   alt="Equipos Icon"
                   width={500}
                   height={500}
-                  // --- CHANGED ---
-                  // Added h-full and object-contain
                   className={`w-full h-full object-contain ${
                     selectedCategory === "Equipos" ? "brightness-0 invert" : ""
                   }`}
@@ -133,8 +162,12 @@ export default function ProductosPage() {
         {/* Conditionally Rendered Products Grid */}
         {selectedCategory && (
           <section
+            // This ID is crucial for the scrollIntoView to find
             id={selectedCategory?.toLowerCase()}
-            className="py-20 scroll-mt-20"
+            // scroll-mt-10 adds 10 units of margin to the top when scrolling
+            // (e.g., 2.5rem if 1 unit = 0.25rem).
+            // Adjust this value to account for a sticky header if you have one.
+            className="pb-10 scroll-mt-10"
           >
             <div className="mx-auto px-4 container">
               <div className="relative gap-4 mx-auto">
@@ -150,9 +183,6 @@ export default function ProductosPage() {
                 )}
               </div>
 
-              {/* --- CHANGED ---
-                Changed from "flex" to a responsive "grid" 
-              */}
               <div className="gap-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {/* LOGIC FOR RENDERING THE CORRECT GRID */}
 
@@ -162,7 +192,6 @@ export default function ProductosPage() {
                     {/* Special Card to enter the LIO sub-category */}
                     <div
                       onClick={() => setSelectedSubCategory("LIO")}
-                      // --- CHANGED --- Removed "w-64"
                       className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
                     >
                       <div className="relative w-full h-full">
@@ -179,7 +208,6 @@ export default function ProductosPage() {
                       <div
                         key={product.name}
                         onClick={() => openModal(product)}
-                        // --- CHANGED --- Removed "w-64"
                         className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
                       >
                         <div className="relative w-full h-full">
@@ -201,7 +229,6 @@ export default function ProductosPage() {
                     <div
                       key={product.name}
                       onClick={() => openModal(product)}
-                      // --- CHANGED --- Removed "w-64"
                       className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
                     >
                       <div className="relative w-full h-full">
@@ -221,7 +248,6 @@ export default function ProductosPage() {
                     <div
                       key={product.name}
                       onClick={() => openModal(product)}
-                      // --- CHANGED --- Removed "w-64"
                       className="group flex flex-col justify-center items-center gap-2 bg-white hover:bg-[#0069A8] hover:shadow-xl p-4 border border-gray-200 hover:border-sky-500 rounded-lg aspect-square text-center transition-all hover:-translate-y-1 duration-300 cursor-pointer"
                     >
                       <div className="relative w-full h-full">

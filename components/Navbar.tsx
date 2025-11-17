@@ -56,7 +56,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link href="/" passHref>
           <div
-            className={`flex font-bold gap-2 w-[200px] md:w-[20%] cursor-pointer ${
+            className={`flex font-bold gap-2 w-[200px]  md:w-[30%] cursor-pointer ${
               useSolidNavbar ? "text-gray-800" : "text-gray-500"
             }`}
           >
@@ -65,18 +65,19 @@ export default function Navbar() {
               alt="20 de junio"
               height={1000}
               width={1000}
-              className="w-1/3"
+              className="w-1/3 object-contain"
             />
             <Image
               src={"/assets/icons/Logo-2.png"}
               alt="20 de junio"
               height={1000}
               width={1000}
-              className={`${useSolidNavbar ? "" : "invert brightness-0"}`}
+              className={`w-2/3 object-contain ${
+                useSolidNavbar ? "" : "invert brightness-0"
+              }`}
             />
           </div>
         </Link>
-
         {/* --- 2. Desktop Navigation (Hidden on mobile) --- */}
         <div className="hidden md:block whitespace-nowrap">
           <NavigationMenu>

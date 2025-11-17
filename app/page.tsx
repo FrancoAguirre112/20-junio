@@ -172,11 +172,11 @@ export default function HomePage() {
           <div className="items-center gap-12 grid md:grid-cols-2 mx-auto px-4 container">
             <div>
               <Image
-                src="/assets/images/Placeholder.webp"
-                alt="Caregiver with elderly woman"
+                src="/assets/icons/LOGO.WEBP"
+                alt="20 de juno"
                 width={600}
                 height={400}
-                className="shadow-xl rounded-lg"
+                className=""
               />
             </div>
             <div className="md:text-left text-center">
@@ -184,7 +184,10 @@ export default function HomePage() {
                 INTRODUCCIÓN
               </h2>
               <p className="mb-6 text-gray-600 leading-relaxed">
-                Breve texto sobre quien es 20 de junio
+                Con más de 20 años de experiencia, en 20 de Junio ofrecemos
+                soluciones confiables en insumos y equipos médicos. Combinamos
+                innovación, trazabilidad y respaldo científico para mejorar la
+                salud en todo el país.
               </p>
               {/* <Button variant="outline">Read More</Button> */}
             </div>

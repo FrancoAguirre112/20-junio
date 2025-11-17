@@ -54,16 +54,9 @@ export default function Footer() {
           */}
           <div className="flex flex-col items-center md:items-start md:col-span-1">
             <Link href="/" passHref>
-              <div className="flex items-center gap-2 -ml-[10dvw] max-w-[30dvw] md:max-w-[10dvw] cursor-pointer">
+              <div className="flex items-center gap-2 max-w-[30dvw] md:max-w-[10dvw] cursor-pointer">
                 <Image
-                  src={"/assets/icons/Logo-1.png"}
-                  alt="20 de junio"
-                  height={1000}
-                  width={1000}
-                  className="w-1/3"
-                />
-                <Image
-                  src={"/assets/icons/Logo-2.png"}
+                  src={"/assets/icons/Logo.webp"}
                   alt="20 de junio"
                   height={1000}
                   width={1000}
@@ -107,22 +100,22 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex justify-center md:justify-start items-center gap-2">
                 <Phone size={18} />
-                <a href="tel:+541126590757" className="hover:text-gray-500">
-                  +54 11 2659-0757
+                <a href="tel:01145717540" className="hover:text-gray-500">
+                  (011) 4571-7540
                 </a>
               </li>
               <li className="flex justify-center md:justify-start items-center gap-2">
                 <Mail size={18} />
                 <a
-                  href="mailto:info@tuempresa.com"
+                  href="mailto:info@20dejunio.com.ar"
                   className="hover:text-gray-500"
                 >
-                  info@tuempresa.com
+                  info@20dejunio.com.ar
                 </a>
               </li>
               <li className="flex justify-center md:justify-start items-center gap-2">
                 <MapPin size={18} />
-                <span>Av. Corrientes 1234, CABA</span>
+                <span>Llavallol 4331 - C.P. 1419, CABA</span>
               </li>
             </ul>
           </div>
@@ -159,33 +152,6 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-
-            <h3 className="mb-4 font-bold text-sm uppercase tracking-wider">
-              Redes
-            </h3>
-            <div className="flex justify-center md:justify-start space-x-4">
-              <Link
-                href="#"
-                aria-label="Facebook"
-                className="hover:text-gray-500 transition-colors"
-              >
-                <Facebook size={24} />
-              </Link>
-              <Link
-                href="#"
-                aria-label="Instagram"
-                className="hover:text-gray-500 transition-colors"
-              >
-                <Instagram size={24} />
-              </Link>
-              <Link
-                href="#"
-                aria-label="LinkedIn"
-                className="hover:text-gray-500 transition-colors"
-              >
-                <Linkedin size={24} />
-              </Link>
-            </div>
           </div>
         </div>
       </div>

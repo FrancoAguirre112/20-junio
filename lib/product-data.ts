@@ -7,7 +7,7 @@ import { Product } from "@/types/index";
  */
 export const PRODUCT_DATA: Product[] = [
   {
-    name: "Lio Monofocal",
+    name: "LIO Monofocal",
     icon: "/assets/icons/productos/lio_monofocal.png",
     tagline: "Lentes intraoculares monofocales de última generación",
     category: "Insumos",
@@ -80,7 +80,7 @@ export const PRODUCT_DATA: Product[] = [
       "Porque volver a ver con claridad y sin las limitaciones del astigmatismo, es volver a vivir plenamente.",
   },
   {
-    name: "Lio Multifocal",
+    name: "LIO Multifocal",
     icon: "/assets/icons/productos/lio_multifocal.png",
     tagline: "Lentes intraoculares trifocales de última generación",
     category: "Insumos",
