@@ -100,7 +100,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
               )}
             </div>
 
-            {/* --- NEW: Accordion for Dynamic Sections --- */}
             {product.sections && product.sections.length > 0 && (
               <Accordion.Root
                 type="single" // Allows only one item to be open at a time
