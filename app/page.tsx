@@ -1,5 +1,7 @@
 "use client";
 
+import img01 from "@/public/assets/icons/Logo.webp";
+
 import {
   Card,
   CardContent,
@@ -172,7 +174,7 @@ export default function HomePage() {
           <div className="items-center gap-12 grid md:grid-cols-2 mx-auto px-4 container">
             <div>
               <Image
-                src="/assets/icons/logo2.png"
+                src={img01}
                 alt="20 de juno"
                 width={600}
                 height={400}
