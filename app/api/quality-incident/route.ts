@@ -5,7 +5,6 @@ import { QualityIncidentSchema } from "@/lib/schemas";
 export async function POST(request: NextRequest) {
   // 2. Use NextRequest as the type
   try {
-    // This form doesn't have a file upload, so we can parse JSON directly
     const jsonData = await request.json();
 
     // 1. Validate form data
