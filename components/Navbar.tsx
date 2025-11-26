@@ -28,6 +28,7 @@ const navLinks = [
   { href: "/sobre-nosotros", label: "Nuestra Historia y Propósito" },
   { href: "/productos", label: "Productos" },
   { href: "/salud-visual", label: "Salud Visual" },
+  { href: "/contacto", label: "Contacto" },
   { href: "/cotizacion", label: "Obtener Cotización" },
 ];
 
