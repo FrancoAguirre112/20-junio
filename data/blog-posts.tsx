@@ -10,7 +10,7 @@ export const mantengaSusOjosSanos: BlogPost = {
   description:
     "Hay muchas cosas que puede hacer para mantener sus ojos sanos y proteger su visión.",
   // Reemplaza esto con la ruta real a tu imagen de portada
-  coverImage: "/assets/images/blog/healthy.jpg",
+  coverImage: "/assets/images/blog/blog-1-portada.jpg",
   sections: [
     {
       title:
