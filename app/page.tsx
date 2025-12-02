@@ -26,6 +26,10 @@ import Fade from "embla-carousel-fade";
 import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 
+import eye1 from "@/public/assets/images/eye1.webp";
+import eye2 from "@/public/assets/images/eye2.webp";
+import eye3 from "@/public/assets/images/eye3.webp";
+
 const slugify = (text: string) => {
   return text
     .toString()
@@ -113,31 +117,32 @@ export default function HomePage() {
         >
           {/* 4. Remove the extra embla__container class */}
           <CarouselContent className="h-[70dvh]">
-            {/* Slide 1 (Remove embla__slide class) */}
             <CarouselItem className="h-full">
-              <div className="relative flex justify-center items-center bg-[url('/assets/images/banner1.webp')] bg-cover bg-center w-full h-full">
-                <div className="absolute inset-0 bg-black/60" />
+              <div
+                className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
+                style={{ backgroundImage: `url(${eye1.src})` }}
+              >
+                {/* <div className="absolute inset-0 bg-black/30" /> */}
               </div>
             </CarouselItem>
 
             {/* Slide 2 */}
             <CarouselItem className="h-full">
-              <div className="relative flex justify-center items-center bg-[url('/assets/images/banner2.webp')] bg-cover bg-center w-full h-full">
-                <div className="absolute inset-0 bg-black/40" />
+              <div
+                className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
+                style={{ backgroundImage: `url(${eye2.src})` }}
+              >
+                {/* <div className="absolute inset-0 bg-black/30" /> */}
               </div>
             </CarouselItem>
 
             {/* Slide 3 */}
             <CarouselItem className="h-full">
-              <div className="relative flex justify-center items-center bg-[url('/assets/images/banner3.webp')] bg-cover bg-center w-full h-full">
-                <div className="absolute inset-0 bg-black/40" />
-              </div>
-            </CarouselItem>
-
-            {/* Slide 4 */}
-            <CarouselItem className="h-full">
-              <div className="relative flex justify-center items-center bg-[url('/assets/images/banner4.webp')] bg-cover bg-center w-full h-full">
-                <div className="absolute inset-0 bg-black/40" />
+              <div
+                className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
+                style={{ backgroundImage: `url(${eye3.src})` }}
+              >
+                {/* <div className="absolute inset-0 bg-black/60" /> */}
               </div>
             </CarouselItem>
           </CarouselContent>
