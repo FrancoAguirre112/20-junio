@@ -121,9 +121,7 @@ export default function HomePage() {
               <div
                 className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
                 style={{ backgroundImage: `url(${eye1.src})` }}
-              >
-                {/* <div className="absolute inset-0 bg-black/30" /> */}
-              </div>
+              ></div>
             </CarouselItem>
 
             {/* Slide 2 */}
@@ -131,9 +129,7 @@ export default function HomePage() {
               <div
                 className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
                 style={{ backgroundImage: `url(${eye2.src})` }}
-              >
-                {/* <div className="absolute inset-0 bg-black/30" /> */}
-              </div>
+              ></div>
             </CarouselItem>
 
             {/* Slide 3 */}
@@ -141,9 +137,7 @@ export default function HomePage() {
               <div
                 className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
                 style={{ backgroundImage: `url(${eye3.src})` }}
-              >
-                {/* <div className="absolute inset-0 bg-black/60" /> */}
-              </div>
+              ></div>
             </CarouselItem>
           </CarouselContent>
         </Carousel>
