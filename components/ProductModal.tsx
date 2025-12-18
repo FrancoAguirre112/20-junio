@@ -2,9 +2,9 @@
 
 import React from "react";
 import Image from "next/image";
-import { X, ChevronDown } from "lucide-react"; // Import ChevronDown
-import * as Accordion from "@radix-ui/react-accordion"; // Import Radix UI Accordion
-import { Product, ProductSection } from "@/types/index"; // Adjust path as needed
+import { X, ChevronDown } from "lucide-react";
+import * as Accordion from "@radix-ui/react-accordion";
+import { Product, ProductSection } from "@/types/index";
 
 // Helper component to render section content (Unchanged)
 const ContentSection = ({ section }: { section: ProductSection }) => {
@@ -38,22 +38,26 @@ const ProductModal: React.FC<ProductModalProps> = ({
 }) => {
   if (!product) return null;
 
+  // 1. Group the categories that need the "Header Layout"
+  const isLioOrVisual =
+    product.subCategory === "LIO" || product.subCategory === "Visual";
+
+  // 2. Specific check for Cuchilletes
+  const isCuchilletes = product.name === "Cuchilletes";
+
   return (
-    // Main overlay
     <div
       onClick={onClose}
       className={`fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300
         ${isOpen ? "opacity-100" : "opacity-0 pointer-events-none"}
       `}
     >
-      {/* Modal panel */}
       <div
         onClick={(e) => e.stopPropagation()}
         className={`relative flex h-full md:w-[70dvw] flex-col bg-white shadow-2xl transform transition-transform duration-500 ease-in-out
           ${isOpen ? "translate-y-0" : "translate-y-full"}
         `}
       >
-        {/* --- Modal Header --- */}
         <header className="top-0 z-10 sticky flex flex-shrink-0 justify-between items-center bg-white/80 backdrop-blur-lg p-4 border-gray-200 border-b">
           <div className="w-10"></div>
           <button
@@ -65,7 +69,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
           </button>
         </header>
 
-        {/* --- Scrollable Content Area --- */}
         <main className="flex-grow overflow-y-auto">
           <div className="space-y-6 mx-auto p-6 md:p-10">
             {/* Product Info Row */}
@@ -83,11 +86,53 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   </div>
                 </div>
 
-                <div>
+                <div className="flex flex-col flex-1">
                   <h3 className="font-bold text-white text-2xl">
                     {product.name}
                   </h3>
                   <p className="text-gray-100 text-md">{product.tagline}</p>
+
+                  {/* LIO & VISUAL LAYOUT: Conclusion/Slogan beside image */}
+                  {isLioOrVisual && product.conclusion && (
+                    <div className="mt-4 pt-3 border-white/20 border-t">
+                      <p className="text-gray-100 italic leading-snug">
+                        {product.conclusion}
+                      </p>
+                      {product.slogan && (
+                        <p className="mt-2 font-semibold text-white text-lg leading-snug">
+                          {product.slogan}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* CUCHILLETES LAYOUT: Exact client text */}
+                  {isCuchilletes && (
+                    <div className="mt-4 pt-3 border-white/20 border-t text-white">
+                      <p className="font-bold text-lg">Beneficios para vos</p>
+                      <ul className="space-y-2 mt-2 ml-4 text-sm leading-relaxed list-disc">
+                        <li>
+                          Mayor seguridad: los instrumentos modernos reducen al
+                          mínimo los riesgos durante la cirugía.
+                        </li>
+                        <li>
+                          Cortes precisos y delicados: la tecnología de última
+                          generación permite incisiones más suaves y
+                          controladas.
+                        </li>
+                        <li>
+                          Mejores resultados clínicos: el diseño avanzado
+                          asegura estabilidad y eficacia durante todo el
+                          procedimiento.
+                        </li>
+                        <li>
+                          Higiene garantizada: al ser de un solo uso, se evitan
+                          riesgos de contaminación y se cuida tu salud al
+                          máximo.
+                        </li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -102,8 +147,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
             {product.sections && product.sections.length > 0 && (
               <Accordion.Root
-                type="single" // Allows only one item to be open at a time
-                collapsible // Allows the open item to be closed
+                type="single"
+                collapsible
                 className="space-y-1 w-full"
               >
                 {product.sections.map((section) => (
@@ -126,8 +171,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
               </Accordion.Root>
             )}
 
-            {/* Conclusion & Slogan */}
-            {product.conclusion && (
+            {/* STANDARD FOOTER: Hidden for LIO, Visual, and Cuchilletes */}
+            {!isLioOrVisual && !isCuchilletes && product.conclusion && (
               <div className="mt-6 px-4 pt-6 border-gray-200 border-t">
                 <p className="text-gray-800 italic">{product.conclusion}</p>
                 {product.slogan && (

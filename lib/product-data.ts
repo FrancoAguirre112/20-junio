@@ -241,23 +241,6 @@ export const PRODUCT_DATA: Product[] = [
       "Cuando hablamos de la salud de tus ojos, lo más importante es que la cirugía sea segura, precisa y confiable.",
     sections: [
       {
-        title: "Beneficios para vos",
-        content: [
-          "Mayor seguridad: los instrumentos modernos reducen al mínimo los riesgos durante la cirugía.",
-          "Cortes precisos y delicados: la tecnología de última generación permite incisiones más suaves y controladas.",
-          "Mejores resultados clínicos: el diseño avanzado asegura estabilidad y eficacia durante todo el procedimiento.",
-          "Higiene garantizada: al ser de un solo uso, se evitan riesgos de contaminación y se cuida tu salud al máximo.",
-        ],
-      },
-      {
-        title: "¿Qué significa esto para vos?",
-        content: [
-          "Más tranquilidad en el quirófano.",
-          "Procedimientos más seguros y menos invasivos.",
-          "Una experiencia quirúrgica diseñada para proteger tu visión.",
-        ],
-      },
-      {
         title: "Cuchilletes de Incisión (Slit)",
         content:
           "Uso: incisiones principales en córnea o esclera, para introducir instrumental durante la cirugía de catarata u otros procedimientos. Permiten cortes precisos y controlados.\nMedidas: 1.0 mm, 1.2 mm, 1.4 mm, 1.6 mm, 1.8 mm, 2.0 mm, 2.2 mm, 2.4 mm, 2.5 mm, 2.6 mm, 2.65 mm, 2.75 mm, 2.8 mm, 2.85 mm, 3.0 mm, 3.2 mm.",
@@ -283,12 +266,14 @@ export const PRODUCT_DATA: Product[] = [
           "Uso: cortes rectos y precisos en distintos ángulos, según la necesidad del procedimiento (ranuras, paracentesis o accesos adicionales).\nModelos/Medidas: 15°, 22.5°, 30°, 45°.",
       },
     ],
+    slogan: " ",
   },
   {
     name: "Viscoelástico Oftálmico",
     icon: "/assets/icons/productos/visco_oft.png",
     tagline: "Aliados en tu cirugía ocular",
     category: "Insumos",
+    subCategory: "Visual",
     description:
       "Durante una cirugía de cataratas o procedimientos en los ojos, el cirujano utiliza soluciones especiales llamadas viscoelásticos. Estas sustancias transparentes y seguras ayudan a proteger los tejidos delicados del ojo y a que la cirugía sea más precisa y segura.",
     sections: [
@@ -324,6 +309,7 @@ export const PRODUCT_DATA: Product[] = [
     icon: "/assets/icons/productos/aceite_silicona.png",
     tagline: "Aceite de silicona ocular para tu recuperación",
     category: "Insumos",
+    subCategory: "Visual",
     description:
       "Después de una cirugía de retina, es fundamental que el ojo se mantenga protegido y estable. El aceite de silicona es una solución confiable que los especialistas utilizan para mantener la retina en su lugar y favorecer la cicatrización.",
     sections: [
@@ -357,6 +343,7 @@ export const PRODUCT_DATA: Product[] = [
     icon: "/assets/icons/productos/perfluoro_carbono.png",
     tagline: "Un apoyo esencial en tu cirugía de retina",
     category: "Insumos",
+    subCategory: "Visual",
     description:
       "Durante una operación de retina, el cirujano necesita mantenerla en su lugar para poder trabajar con precisión. Para esto se utiliza un líquido transparente y seguro llamado perfluorocarbono ocular, diseñado especialmente para proteger tu ojo durante el procedimiento.",
     sections: [
@@ -388,10 +375,11 @@ export const PRODUCT_DATA: Product[] = [
       "El perfluorocarbono ocular es un aliado invisible que hace que tu cirugía sea más segura, precisa y con mayores posibilidades de recuperar tu visión.",
   },
   {
-    name: "Microgas para taponamiento",
+    name: "Gas Intraocular",
     icon: "/assets/icons/productos/microgas_taponamiento.png",
     tagline: "Gases especiales que ayudan a tu recuperación ocular",
     category: "Insumos",
+    subCategory: "Visual",
     description:
       "En las cirugías de retina, los especialistas utilizan pequeñas burbujas de gases seguros y no tóxicos que se colocan dentro del ojo al final del procedimiento. Estas burbujas cumplen la función de mantener la retina en su lugar mientras cicatriza, favoreciendo una recuperación más estable.",
     sections: [

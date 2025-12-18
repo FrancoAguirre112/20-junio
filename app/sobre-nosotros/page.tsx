@@ -151,13 +151,11 @@ export default function SobreNosotrosPage() {
                 <h2 className="font-bold text-gray-800 text-3xl">Misión</h2>
               </div>
               <p className="mt-4 text-gray-700">
-                Servir a la comunidad mediante la distribución responsable de
-                medicamentos y dispositivos médicos, garantizando el acceso
-                equitativo a productos seguros, eficaces y de comprobada
-                calidad. Promovemos la transparencia, la trazabilidad y la
-                eficiencia logística como pilares de un servicio confiable, que
-                conecta a los fabricantes líderes con el sistema sanitario
-                argentino, tanto en el ámbito público como privado.
+                Servir a la comunidad garantizando el acceso equitativo a
+                medicamentos y dispositivos médicos seguros y de calidad,
+                mediante una distribución responsable, transparente y eficiente,
+                conectando a fabricantes líderes con el sistema sanitario
+                argentino, en los ámbitos público y privado.
               </p>
             </div>
             <div className="bg-gray-50 p-8 rounded-lg">

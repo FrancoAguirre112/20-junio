@@ -25,7 +25,7 @@ import {
 // --- 1. Define links as an array (DRY principle) ---
 const navLinks = [
   { href: "/", label: "Inicio" },
-  { href: "/sobre-nosotros", label: "Nuestra Historia y Propósito" },
+  { href: "/sobre-nosotros", label: "Sobre Nosotros" },
   { href: "/productos", label: "Productos" },
   { href: "/salud-visual", label: "Salud Visual" },
   { href: "/contacto", label: "Contacto" },

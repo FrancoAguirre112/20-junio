@@ -25,7 +25,6 @@ export default function ProductosPage() {
     const hash = window.location.hash;
     if (hash === "#insumos") {
       setSelectedCategory("Insumos");
-      // Optional: Scroll on initial load as well
       setTimeout(() => {
         document
           .getElementById("insumos")
@@ -33,7 +32,6 @@ export default function ProductosPage() {
       }, 100);
     } else if (hash === "#equipos") {
       setSelectedCategory("Equipos");
-      // Optional: Scroll on initial load as well
       setTimeout(() => {
         document
           .getElementById("equipos")
@@ -42,9 +40,7 @@ export default function ProductosPage() {
     }
   }, []);
 
-  // --- ⬇️ MODIFIED THIS HOOK ⬇️ ---
-  // This hook now handles both updating the URL hash AND
-  // triggering the smooth scroll to the correct section.
+  // Sync state with URL and scroll
   useEffect(() => {
     let hash = "";
     if (selectedCategory === "Insumos") {
@@ -53,35 +49,26 @@ export default function ProductosPage() {
       hash = "#equipos";
     }
 
-    // 1. Update the URL hash without letting the router scroll
     if (hash) {
       router.push(hash, { scroll: false });
     } else {
-      // If no category, remove the hash from the URL
       router.replace(window.location.pathname, { scroll: false });
     }
 
-    // 2. Manually trigger the smooth scroll
     if (selectedCategory) {
-      // We use a small timeout. This waits for React to re-render
-      // and for the new <section> to be added to the DOM.
       const timer = setTimeout(() => {
         const element = document.getElementById(selectedCategory.toLowerCase());
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      }, 50); // 50ms is usually a safe delay
-
-      // Clear the timer if the component unmounts or state changes again
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [selectedCategory, router]);
-  // --- ⬆️ END OF MODIFIED HOOK ⬆️ ---
 
   const handleCategoryClick = (category: "Insumos" | "Equipos") => {
     setSelectedCategory((prev) => (prev === category ? null : category));
     setSelectedSubCategory(null);
-    // The useEffect above will handle the scrolling
   };
 
   const openModal = (product: Product) => {
@@ -93,11 +80,17 @@ export default function ProductosPage() {
     setIsModalOpen(false);
   };
 
+  // --- ⬇️ CHANGED LOGIC HERE ⬇️ ---
+  // Before: !p.subCategory (Excluded "Visual")
+  // Now: p.subCategory !== "LIO" (Includes "Visual" AND items with no subCategory)
   const generalInsumos = useMemo(
     () =>
-      PRODUCT_DATA.filter((p) => p.category === "Insumos" && !p.subCategory),
+      PRODUCT_DATA.filter(
+        (p) => p.category === "Insumos" && p.subCategory !== "LIO"
+      ),
     []
   );
+  // --- ⬆️ END CHANGE ⬆️ ---
 
   const lioProducts = useMemo(
     () => PRODUCT_DATA.filter((p) => p.subCategory === "LIO"),
@@ -162,11 +155,7 @@ export default function ProductosPage() {
         {/* Conditionally Rendered Products Grid */}
         {selectedCategory && (
           <section
-            // This ID is crucial for the scrollIntoView to find
             id={selectedCategory?.toLowerCase()}
-            // scroll-mt-10 adds 10 units of margin to the top when scrolling
-            // (e.g., 2.5rem if 1 unit = 0.25rem).
-            // Adjust this value to account for a sticky header if you have one.
             className="pb-10 scroll-mt-10"
           >
             <div className="mx-auto px-4 container">
@@ -203,7 +192,7 @@ export default function ProductosPage() {
                         />
                       </div>
                     </div>
-                    {/* The rest of the 'Insumos' */}
+                    {/* The rest of the 'Insumos' (Includes Visual & Standard items) */}
                     {generalInsumos.map((product) => (
                       <div
                         key={product.name}

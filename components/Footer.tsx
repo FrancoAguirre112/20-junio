@@ -12,7 +12,7 @@ import {
 // The same navigation links from your navbar for consistency
 const navLinks = [
   { href: "/", label: "Inicio" },
-  { href: "/sobre-nosotros", label: "Nuestra Historia y Propósito" },
+  { href: "/sobre-nosotros", label: "Sobre Nosotros" },
   { href: "/productos", label: "Productos" },
   { href: "/salud-visual", label: "Salud Visual" },
   { href: "/cotizacion", label: "Obtener Cotización" },
@@ -126,7 +126,7 @@ export default function Footer() {
           */}
           <div className="md:text-left text-center">
             <h3 className="mb-4 font-bold text-sm uppercase tracking-wider">
-              Complimiento
+              Legal y Cumplimiento
             </h3>
             <ul className="space-y-2 mb-6">
               {/* --- NEW LINKS ADDED HERE --- */}

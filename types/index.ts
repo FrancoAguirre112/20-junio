@@ -18,7 +18,7 @@ export interface Product {
   sections: ProductSection[];
   category: "Insumos" | "Equipos";
   conclusion?: string;
-  subCategory?: "LIO";
+  subCategory?: "LIO" | "Visual";
   slogan?: string;
 }
 
