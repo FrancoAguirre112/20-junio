@@ -6,18 +6,38 @@ import { X, ChevronDown } from "lucide-react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { Product, ProductSection } from "@/types/index";
 
-// Helper component to render section content (Unchanged)
+// Helper function to parse **text** into <strong>text</strong>
+const parseBoldText = (text: string) => {
+  // Split the text by "**"
+  const parts = text.split("**");
+  return parts.map((part, index) =>
+    // Odd indices (1, 3, 5...) are the parts that were inside ** **
+    index % 2 === 1 ? (
+      <strong key={index} className="font-bold text-gray-900">
+        {part}
+      </strong>
+    ) : (
+      // Even indices are normal text
+      part
+    )
+  );
+};
+
 const ContentSection = ({ section }: { section: ProductSection }) => {
   return (
     <div className="px-4 pt-2 pb-4">
       {typeof section.content === "string" ? (
         <p className="text-gray-700 leading-relaxed whitespace-pre-line">
-          {section.content}
+          {/* Call the helper function here */}
+          {parseBoldText(section.content)}
         </p>
       ) : (
         <ul className="space-y-2 ml-4 text-gray-700 list-disc">
           {section.content.map((item, index) => (
-            <li key={index}>{item}</li>
+            <li key={index}>
+              {/* Call it here too, in case you want bold text inside lists */}
+              {parseBoldText(item)}
+            </li>
           ))}
         </ul>
       )}
@@ -73,8 +93,10 @@ const ProductModal: React.FC<ProductModalProps> = ({
           <div className="space-y-6 mx-auto p-6 md:p-10">
             {/* Product Info Row */}
             <div className="flex flex-col items-start gap-5 bg-main-500 p-4 rounded-lg">
-              <div className="flex gap-5">
-                <div className="flex flex-col justify-center items-center bg-white p-2 w-1/3 aspect-square">
+              {/* UPDATED: Added flex-col for mobile, md:flex-row for desktop */}
+              <div className="flex md:flex-row flex-col gap-5 w-full">
+                {/* UPDATED: Changed width to w-1/2 and added mx-auto for centering on mobile */}
+                <div className="flex flex-col justify-center items-center bg-white mx-auto md:mx-0 p-2 w-1/2 md:w-1/3 aspect-square">
                   <div className="group flex flex-col justify-center items-center gap-2 bg-white p-4 border-2 border-main-500 w-full aspect-square text-center transition-all duration-300">
                     <Image
                       src={product.icon}
@@ -86,7 +108,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
                   </div>
                 </div>
 
-                <div className="flex flex-col flex-1">
+                {/* UPDATED: Added text-center for mobile, md:text-left for desktop */}
+                <div className="flex flex-col flex-1 md:text-left text-center">
                   <h3 className="font-bold text-white text-2xl">
                     {product.name}
                   </h3>
@@ -108,7 +131,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
                   {/* CUCHILLETES LAYOUT: Exact client text */}
                   {isCuchilletes && (
-                    <div className="mt-4 pt-3 border-white/20 border-t text-white">
+                    <div className="mt-4 pt-3 border-white/20 border-t text-white text-left">
                       <p className="font-bold text-lg">Beneficios para vos</p>
                       <ul className="space-y-2 mt-2 ml-4 text-sm leading-relaxed list-disc">
                         <li>

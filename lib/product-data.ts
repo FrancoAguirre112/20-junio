@@ -420,6 +420,7 @@ export const PRODUCT_DATA: Product[] = [
     icon: "/assets/icons/productos/microscopio_quirurgico.png",
     tagline: "El microscopio que transforma la cirugía oftalmológica",
     category: "Equipos",
+    subCategory: "Visual",
     description:
       "En cirugía ocular, cada detalle cuenta. Por eso, contar con un microscopio de última generación no es un lujo: es la clave para lograr seguridad, precisión y resultados superiores.",
     sections: [
@@ -502,21 +503,22 @@ export const PRODUCT_DATA: Product[] = [
     icon: "/assets/icons/productos/sistema_3d.png",
     tagline: "El futuro de la cirugía oftalmológica, hoy",
     category: "Equipos",
+    subCategory: "Visual",
     sections: [
       {
-        title: "Ve lo que otros no pueden ver",
+        title: "Descubrí lo que otros no pueden ver",
         content:
-          "Imagen 3D en ultra alta definición que revela cada detalle.\nHasta 5 veces más profundidad de campo que un microscopio tradicional.\nVisualizá la retina, la cápsula y los tejidos con una claridad sorprendente.\n Más precisión. Más confianza. Mejores resultados.",
+          "Imagen 3D en ultra alta definición que expone cada detalle con máxima nitidez.\nHasta **cinco veces más profundidad de campo** que un microscopio convencional.\nVisualización precisa de la retina, la cápsula y los tejidos, con una claridad excepcional.",
       },
       {
         title: "Cirugías más seguras",
         content:
-          "Operá con menos luz intraocular: protegé los ojos de tus pacientes del riesgo de fototoxicidad.\nModos digitales inteligentes que se adaptan a cada necesidad:\n- Claridad extra en la cápsula.\n- Contraste optimizado con tintes verdes o azules.\n- Detalles invisibles a simple vista, ahora al alcance de tu mano.\n Seguridad para tus pacientes, tranquilidad para vos.",
+          "Operá con **menor intensidad de luz intraocular**, reduciendo el riesgo de **fototoxicidad** y cuidando la salud visual de tus pacientes.\n\nModos digitales inteligentes que se adaptan a cada procedimiento:\n\n**-Mayor definición de la cápsula**\n**-Contraste optimizado** con el uso de tintes verdes o azules\n**-Detalles antes imperceptibles**, ahora visibles con total precisión",
       },
       {
-        title: "Comodidad que cambia tu práctica",
+        title: "Comodidad que transforma tu práctica",
         content:
-          "Cirugía heads-up: olvidate de la incomodidad de los oculares.\nPostura natural frente a una pantalla gigante.\nMenos fatiga, más concentración, más precisión.\n Tu espalda lo agradece, tu rendimiento también.",
+          "Cirugía heads-up: dejá atrás la incomodidad de los oculares tradicionales.\nPostura natural frente a una pantalla de gran tamaño.\nMenos fatiga, mayor concentración y máxima precisión.\n\n**Tu cuerpo lo siente. Tu desempeño lo demuestra.**",
       },
       {
         title: "El poder del trabajo en equipo",
@@ -531,17 +533,18 @@ export const PRODUCT_DATA: Product[] = [
       {
         title: "¿Por qué elegirlo?",
         content:
-          "Porque este sistema no es solo un microscopio, es un salto de generación.\n\nMás que una herramienta, es un nuevo estándar en cirugía oftalmológica:\n\n- Preciso.\n- Seguro\n- Cómodo\n- Colaborativo",
+          "Porque no es una evolución. Es una **transformación tecnológica.**\nNo es solo un microscopio: es la forma en que se va a hacer cirugía a partir de ahora.\nUn **nuevo estándar** en oftalmología que redefine lo posible:\n\n**-Precisión extrema**\n**-Seguridad inteligente**\n**-Comodidad sin concesiones**\n**-Cirugía verdaderamente colaborativa**",
       },
     ],
     conclusion: "El futuro de la visualización quirúrgica está acá.",
     slogan: "Y te pone a vos y a tus pacientes un paso adelante.",
   },
   {
-    name: "Sistema de Facoemulsificación para Cirugía de Catarata",
+    name: "EQUIPOS DE FACOEMULSIFICACIÓN",
     icon: "/assets/icons/productos/sistema_catarata.png",
     tagline: "La nueva era en cirugía de cataratas",
     category: "Equipos",
+    subCategory: "Visual",
     sections: [
       {
         title: "Seguridad garantizada en cada paso",
@@ -585,6 +588,7 @@ export const PRODUCT_DATA: Product[] = [
     icon: "/assets/icons/productos/biometro_optico.png",
     tagline: "Precisión sin límites. Seguridad sin comparación.",
     category: "Equipos",
+    subCategory: "Visual",
     description:
       "El nuevo estándar en biometría óptica llegó para transformar la cirugía de catarata.",
     sections: [
@@ -618,10 +622,11 @@ export const PRODUCT_DATA: Product[] = [
       "Un equipo creado para brindar seguridad total al paciente y eficacia indiscutida al cirujano. No es solo una herramienta: es la elección natural para quienes buscan resultados sin sorpresas.",
   },
   {
-    name: "Sistema Quirúrgico para Facovitrectomía",
+    name: "PLATAFORMA PARA FACOVITRECTOMIA",
     icon: "/assets/icons/productos/sistema_vitreorretiniana.png",
     tagline: "La excelencia en cirugía vítreo-retiniana",
     category: "Equipos",
+    subCategory: "Visual",
     sections: [
       {
         title: "Seguridad sin compromisos",
