@@ -13,6 +13,12 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         {children}
       </h2>
     ),
+    h3: ({ children }) => (
+      <h3 className="mt-6 mb-3 font-bold text-gray-900 text-xl md:text-2xl">
+        {children}
+      </h3>
+    ),
+
     // Esto aplica estilos a todos los párrafos
     p: ({ children }) => <p className="mb-4 leading-relaxed">{children}</p>,
     // Esto aplica estilos a todas las listas
