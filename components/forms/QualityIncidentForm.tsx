@@ -76,14 +76,7 @@ export function QualityIncidentForm() {
         throw new Error(result.error || "Algo salió mal");
       }
 
-      toast.success("Incidencia de calidad enviada con éxito.", {
-        description: (
-          <div className="text-xs">
-            <p>ID de Referencia: {result.data.reportId}</p>
-            <p>Hash de Verificación: {result.data.hash.substring(0, 20)}...</p>
-          </div>
-        ),
-      });
+      toast.success("Incidencia de calidad enviada con éxito.");
       form.reset();
     } catch (error) {
       const errorMessage =
@@ -528,7 +521,7 @@ export function QualityIncidentForm() {
                       <SelectValue placeholder="Seleccione un estado" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     <SelectItem value="Recuperado">Recuperado</SelectItem>
                     <SelectItem value="Recuperado con secuela">
                       Recuperado con secuela

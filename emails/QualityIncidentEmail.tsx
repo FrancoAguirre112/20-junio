@@ -10,9 +10,11 @@ import {
   Hr,
   Column,
   Row,
+  Button, // 1. Import Button
+  Link, // 2. Import Link
 } from "@react-email/components";
 import * as React from "react";
-import { QualityIncidentFormData } from "@/lib/schemas"; // Import the type for props
+import { QualityIncidentFormData } from "@/lib/schemas";
 
 // Reusable styles
 const main = {
@@ -29,43 +31,66 @@ const container = {
   borderRadius: "4px",
 };
 const heading = {
-  fontSize: "28px",
+  fontSize: "24px",
   fontWeight: "bold",
-  marginTop: "48px",
+  marginTop: "32px",
   textAlign: "center" as const,
-  color: "#484848",
+  color: "#1a1a1a",
 };
 const section = {
   padding: "0 48px",
 };
 const sectionTitle = {
-  fontSize: "20px",
+  fontSize: "18px",
   fontWeight: "bold",
   color: "#484848",
   borderBottom: "1px solid #f0f0f0",
   paddingBottom: "8px",
   marginBottom: "16px",
+  marginTop: "24px",
 };
 const label = {
   fontSize: "14px",
   fontWeight: "bold",
-  color: "#484848",
+  color: "#666",
   marginBottom: "2px",
+  textTransform: "uppercase" as const,
 };
 const text = {
   fontSize: "16px",
   lineHeight: "24px",
-  color: "#484848",
+  color: "#1a1a1a",
   margin: "0 0 16px",
 };
 const codeBox = {
   backgroundColor: "#f0f0f0",
-  padding: "10px",
-  borderRadius: "4px",
+  padding: "12px",
+  borderRadius: "6px",
   fontFamily: "monospace",
-  fontSize: "12px",
+  fontSize: "14px",
+  fontWeight: "bold" as const,
   wordBreak: "break-all" as const,
   marginTop: "8px",
+  textAlign: "center" as const,
+  letterSpacing: "1px",
+};
+
+// New Button Styles
+const btnContainer = {
+  textAlign: "center" as const,
+  marginTop: "32px",
+  marginBottom: "32px",
+};
+const button = {
+  backgroundColor: "#2563eb", // Main-500 equivalent
+  borderRadius: "6px",
+  color: "#fff",
+  fontSize: "16px",
+  fontWeight: "bold",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  display: "inline-block",
+  padding: "12px 24px",
 };
 
 interface QualityIncidentEmailProps {
@@ -78,110 +103,97 @@ export const QualityIncidentEmail = ({
   formData,
   reportId,
   hash,
-}: QualityIncidentEmailProps) => (
-  <Html>
-    <Head />
-    <Preview>Nuevo Reporte de Incidencia de Calidad</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Section style={section}>
-          <Heading style={heading}>Reporte de Incidencia de Calidad</Heading>
+}: QualityIncidentEmailProps) => {
+  // 3. Define the secure link
+  // Use environment variable or fallback to your domain
+  const baseUrl =
+    process.env.NEXT_PUBLIC_APP_URL || "https://www.20dejunio.com.ar";
+  const verificationLink = `${baseUrl}/verificar?id=${reportId}`;
 
-          {/* Section: Event Description */}
-          <Text style={sectionTitle}>Descripción del Evento</Text>
-          <Text style={label}>Información de Contacto:</Text>
-          <Text style={text}>{formData.contactInfo}</Text>
-          <Text style={label}>Descripción Detallada:</Text>
-          <Text style={text}>{formData.eventDescription}</Text>
-          <Row>
-            <Column>
-              <Text style={label}>Contacto con Paciente:</Text>
-              <Text style={text}>{formData.patientContact}</Text>
-            </Column>
-            <Column>
-              <Text style={label}>Cirugía Concluida:</Text>
-              <Text style={text}>{formData.surgeryCompleted}</Text>
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Text style={label}>Procedimiento:</Text>
-              <Text style={text}>{formData.procedure}</Text>
-            </Column>
-            <Column>
-              <Text style={label}>Momento del Evento:</Text>
-              <Text style={text}>{formData.eventTiming}</Text>
-            </Column>
-          </Row>
-          <Text style={label}>Dispositivo Involucrado:</Text>
-          <Text style={text}>{formData.deviceInfo}</Text>
+  return (
+    <Html>
+      <Head />
+      <Preview>Acción Requerida: Reporte {reportId.substring(0, 8)}</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          <Section style={section}>
+            <Heading style={heading}>Incidencia de Calidad Registrada</Heading>
 
-          <Hr />
+            <Text style={{ ...text, textAlign: "center", color: "#666" }}>
+              Se ha recibido un nuevo reporte en el sistema seguro.
+            </Text>
 
-          {/* Section: Patient Information */}
-          <Text style={sectionTitle}>Información del Paciente</Text>
-          <Row>
-            <Column>
-              <Text style={label}>Iniciales:</Text>
-              <Text style={text}>{formData.patientInitials}</Text>
-            </Column>
-            <Column>
-              <Text style={label}>Edad:</Text>
-              <Text style={text}>{formData.age}</Text>
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <Text style={label}>Fecha de Nacimiento:</Text>
-              <Text style={text}>{formData.dob}</Text>
-            </Column>
-            <Column>
-              <Text style={label}>Sexo:</Text>
-              <Text style={text}>{formData.sex}</Text>
-            </Column>
-          </Row>
-          <Text style={label}>Historial Médico Relevante:</Text>
-          <Text style={text}>{formData.medicalHistory}</Text>
-          <Text style={label}>Impacto en el Paciente:</Text>
-          <Text style={text}>{formData.patientImpact}</Text>
+            {/* PRIMARY CALL TO ACTION */}
+            <Section style={btnContainer}>
+              <Button style={button} href={verificationLink}>
+                Ver Detalles Completos y Validar
+              </Button>
+            </Section>
+            <Text
+              style={{
+                ...text,
+                fontSize: "12px",
+                color: "#888",
+                textAlign: "center",
+              }}
+            >
+              Si el botón no funciona, copie este enlace: <br />
+              <Link href={verificationLink} style={{ color: "#2563eb" }}>
+                {verificationLink}
+              </Link>
+            </Text>
 
-          <Hr />
+            <Hr />
 
-          {/* Section: Intervention & Treatment */}
-          <Text style={sectionTitle}>Intervención y Tratamiento</Text>
-          <Text style={label}>¿Se Requirió Intervención Médica?:</Text>
-          <Text style={text}>{formData.medicalInterventionRequired}</Text>
-          {formData.medicalInterventionRequired === "SI" && (
-            <>
-              <Text style={label}>Detalles de la Intervención:</Text>
-              <Text style={text}>{formData.interventionDetails}</Text>
-              <Text style={label}>Diagnóstico:</Text>
-              <Text style={text}>{formData.diagnosis}</Text>
-              <Text style={label}>¿Fue Hospitalizado?:</Text>
-              <Text style={text}>{formData.wasHospitalized}</Text>
-            </>
-          )}
-          <Text style={label}>¿Se Prescribió Tratamiento?:</Text>
-          <Text style={text}>{formData.treatmentPrescribed}</Text>
-          {formData.treatmentPrescribed === "SI" && (
-            <>
-              <Text style={label}>Detalles del Tratamiento:</Text>
-              <Text style={text}>{formData.treatmentDetails}</Text>
-            </>
-          )}
+            {/* SAFE SUMMARY (No Patient Data) */}
+            <Text style={sectionTitle}>Resumen Operativo</Text>
 
-          <Hr />
+            <Row>
+              <Column>
+                <Text style={label}>Reportado Por:</Text>
+                <Text style={text}>{formData.contactInfo}</Text>
+              </Column>
+            </Row>
 
-          {/* Section: Status and Verification */}
-          <Text style={sectionTitle}>Estado Final y Verificación</Text>
-          <Text style={label}>Estado Actual del Paciente:</Text>
-          <Text style={text}>{formData.patientStatus}</Text>
-          <Text style={label}>ID de Referencia del Reporte:</Text>
-          <div style={codeBox}>{reportId}</div>
-          <Text style={label}>Hash de Verificación (Huella Digital):</Text>
-          <div style={codeBox}>{hash}</div>
-        </Section>
-      </Container>
-    </Body>
-  </Html>
-);
+            <Text style={label}>Dispositivo Involucrado:</Text>
+            <Text style={text}>{formData.deviceInfo}</Text>
+
+            <Text style={label}>Evento (Breve):</Text>
+            <Text style={text}>
+              {/* Truncate description for email security if it's very long */}
+              {formData.eventDescription.length > 100
+                ? formData.eventDescription.substring(0, 100) + "..."
+                : formData.eventDescription}
+            </Text>
+
+            <Text style={label}>Momento:</Text>
+            <Text style={text}>{formData.eventTiming}</Text>
+
+            <Hr />
+
+            {/* SECURITY FOOTER */}
+            <Text style={sectionTitle}>Seguridad y Auditoría</Text>
+            <Text
+              style={{ fontSize: "13px", color: "#666", fontStyle: "italic" }}
+            >
+              Por razones de seguridad y cumplimiento de la Ley 25.326, los
+              datos sensibles del paciente (historial, diagnóstico, iniciales)
+              no se incluyen en este correo. Utilice el botón superior para
+              acceder a la información completa en el panel seguro.
+            </Text>
+
+            <Text style={label}>ID del Reporte:</Text>
+            <div style={codeBox}>{reportId}</div>
+
+            <Text style={label}>Hash de Integridad:</Text>
+            <div style={{ ...codeBox, fontSize: "10px", color: "#666" }}>
+              {hash}
+            </div>
+          </Section>
+        </Container>
+      </Body>
+    </Html>
+  );
+};
+
+export default QualityIncidentEmail;

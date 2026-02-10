@@ -52,14 +52,7 @@ export function IntegrityReportForm() {
         throw new Error(result.error || "Something went wrong");
       }
 
-      toast.success("Reporte enviado con éxito.", {
-        description: (
-          <div className="text-xs">
-            <p>ID de Referencia: {result.data.reportId}</p>
-            <p>Hash de Verificación: {result.data.hash.substring(0, 20)}...</p>
-          </div>
-        ),
-      });
+      toast.success("Reporte enviado con éxito.");
       form.reset();
     } catch (error) {
       const errorMessage =

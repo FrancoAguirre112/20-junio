@@ -7,12 +7,13 @@ import * as React from "react";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // The `from` address must be from a domain you have verified in your Resend account.
-const fromEmail = process.env.FROM_EMAIL || "onboarding@resend.dev"; // Replace with a default or get from .env
+// Configured to default to info@20dejunio.com.ar if the env var is missing
+const fromEmail = process.env.FROM_EMAIL || "info@20dejunio.com.ar";
 
 interface SendEmailParams {
-  to: string;
+  to: string | string[]; // UPDATED: Accepts a single string or an array of strings
   subject: string;
-  react: React.ReactElement; // The email template as a React component
+  react: React.ReactElement;
 }
 
 /**
@@ -22,17 +23,15 @@ interface SendEmailParams {
 export const sendEmail = async ({ to, subject, react }: SendEmailParams) => {
   if (!process.env.RESEND_API_KEY) {
     console.error("RESEND_API_KEY is not set. Email not sent.");
-    // In development, you might not want to throw an error, just log it.
-    // In production, you should probably throw.
     return { error: { message: "Email server is not configured." } };
   }
 
   try {
     const { data, error } = await resend.emails.send({
-      from: `20 de Junio <${fromEmail}>`, // Example: "Your App <noreply@yourdomain.com>"
-      to: [to],
+      from: `20 de Junio <${fromEmail}>`,
+      to: to, // UPDATED: Resend accepts string or string[], so we pass it directly
       subject,
-      react, // This is where the magic happens - Resend renders our React component
+      react,
     });
 
     if (error) {

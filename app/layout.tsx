@@ -32,8 +32,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <Navbar />
-        <FloatingWhatsapp />
-        {children}
+        {/* <FloatingWhatsapp /> */}
+        <div className="min-h-screen">{children}</div>
         <Footer />
         <Toaster richColors />
       </body>

@@ -4,13 +4,10 @@ import { z } from "zod";
 import { createHash } from "crypto";
 import { supabaseServerClient } from "@/lib/supabase/serverClient";
 
-// Zod schema to validate the incoming request body
 const VerifySchema = z.object({
-  reportId: z.string().uuid({ message: "El ID del reporte no es válido." }),
+  reportId: z.string().uuid(),
+  accessCode: z.string().min(1),
 });
-
-// This is the most critical part: it re-creates the object that was originally hashed.
-// This must perfectly match the `incidentForDb` object in your actions.ts file.
 
 const createVerifiableObject = (reportData: any) => {
   return {
@@ -45,14 +42,23 @@ export async function POST(request: Request) {
 
     if (!validation.success) {
       return NextResponse.json(
-        { status: "error", message: "Invalid input." },
-        { status: 400 }
+        { status: "error", message: "Datos incompletos." },
+        { status: 400 },
       );
     }
 
-    const { reportId } = validation.data;
+    const { reportId, accessCode } = validation.data;
 
-    // 1. Fetch the original hash and report type from the audit log
+    // SECURITY CHECK
+    const adminPassword = process.env.ADMIN_ACCESS_PASSWORD;
+    if (!adminPassword || accessCode !== adminPassword) {
+      return NextResponse.json(
+        { status: "error", message: "Credenciales inválidas." },
+        { status: 401 },
+      );
+    }
+
+    // 1. Fetch Audit Log
     const { data: auditLog, error: auditError } = await supabaseServerClient
       .from("report_audit_log")
       .select("*")
@@ -62,16 +68,17 @@ export async function POST(request: Request) {
     if (auditError || !auditLog) {
       return NextResponse.json({
         status: "not_found",
-        message: "No se encontró ningún reporte con ese ID.",
+        message: "No se encontró registro de auditoría para este ID.",
       });
     }
 
     const originalHash = auditLog.data_hash;
     const submissionDate = auditLog.created_at;
 
-    // 2. Determine which table to query and fetch the report data
+    // 2. Fetch Original Data
     let reportData: any = null;
     let isIntegrityReport = false;
+
     if (auditLog.report_id_integrity) {
       const { data } = await supabaseServerClient
         .from("reportes_integridad")
@@ -90,52 +97,57 @@ export async function POST(request: Request) {
     }
 
     if (!reportData) {
-      // This should be rare, but indicates a data inconsistency (log exists, but report is gone)
       return NextResponse.json({
         status: "not_found",
-        message:
-          "El registro de auditoría existe pero no se encontró el reporte original.",
+        message: "El registro original no se encuentra (posible eliminación).",
       });
     }
 
-    // 3. Re-calculate the hash from the fetched data
-    // We must hash the exact same object structure that was originally saved
+    // 3. Re-Verify Hash
     const objectToHash = isIntegrityReport
       ? {
-          // This structure must match `reportToInsert` in actions.ts
           full_name: reportData.full_name,
           contact_info: reportData.contact_info,
           report_description: reportData.report_description,
           file_path: reportData.file_path,
           ip_address: reportData.ip_address,
         }
-      : createVerifiableObject(reportData); // Use the helper for the complex object
+      : createVerifiableObject(reportData);
 
-    const dataString = JSON.stringify(objectToHash);
     const recalculatedHash = createHash("sha256")
-      .update(dataString)
+      .update(JSON.stringify(objectToHash))
       .digest("hex");
 
-    // 4. Compare the hashes and return the result
-    if (recalculatedHash === originalHash) {
-      return NextResponse.json({
-        status: "verified",
-        message: "Verificado: El reporte es auténtico y no ha sido modificado.",
-        data: reportData,
-        timestamp: submissionDate,
-      });
-    } else {
-      return NextResponse.json({
-        status: "tampered",
-        message:
-          "Alerta: La integridad de este reporte no puede ser verificada. Los datos pueden haber sido alterados.",
-        timestamp: submissionDate,
-      });
+    const verificationStatus =
+      recalculatedHash === originalHash ? "verified" : "tampered";
+
+    // 4. Generate Signed URL for File (If applicable)
+    let fileUrl = null;
+    if (isIntegrityReport && reportData.file_path) {
+      // Create a temporary link valid for 1 hour (3600 seconds)
+      const { data: signedData } = await supabaseServerClient.storage
+        .from("reports")
+        .createSignedUrl(reportData.file_path, 3600);
+
+      if (signedData) fileUrl = signedData.signedUrl;
     }
+
+    return NextResponse.json({
+      status: verificationStatus,
+      message:
+        verificationStatus === "verified"
+          ? "VERIFICADO: El reporte es auténtico."
+          : "ALERTA: El reporte ha sido modificado.",
+      data: reportData,
+      timestamp: submissionDate,
+      type: isIntegrityReport ? "integrity" : "quality",
+      fileUrl, // Return the temporary secure link
+    });
   } catch (error) {
+    console.error("Verification Error:", error);
     return NextResponse.json(
-      { status: "error", message: "Ocurrió un error en el servidor." },
-      { status: 500 }
+      { status: "error", message: "Error interno del servidor." },
+      { status: 500 },
     );
   }
 }

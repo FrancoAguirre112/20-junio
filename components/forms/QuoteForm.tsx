@@ -44,7 +44,7 @@ export function QuoteForm() {
 
     // Append the file from the file input
     const fileInput = document.getElementById(
-      "prescriptionFile"
+      "prescriptionFile",
     ) as HTMLInputElement;
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
       formData.append("file", fileInput.files[0]);

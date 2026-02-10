@@ -19,7 +19,7 @@ const parseBoldText = (text: string) => {
     ) : (
       // Even indices are normal text
       part
-    )
+    ),
   );
 };
 
@@ -95,15 +95,18 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <div className="flex flex-col items-start gap-5 bg-main-500 p-4 rounded-lg">
               {/* UPDATED: Added flex-col for mobile, md:flex-row for desktop */}
               <div className="flex md:flex-row flex-col gap-5 w-full">
-                {/* UPDATED: Changed width to w-1/2 and added mx-auto for centering on mobile */}
-                <div className="flex flex-col justify-center items-center bg-white mx-auto md:mx-0 p-2 w-1/2 md:w-1/3 aspect-square">
+                {/* FIX APPLIED HERE: 
+                   Added 'shrink-0' to this wrapper div. 
+                   This prevents the image container from being compressed by the text column.
+                */}
+                <div className="flex flex-col justify-center items-center bg-white mx-auto md:mx-0 p-2 w-1/2 md:w-1/3 aspect-square shrink-0">
                   <div className="group flex flex-col justify-center items-center gap-2 bg-white p-4 border-2 border-main-500 w-full aspect-square text-center transition-all duration-300">
                     <Image
                       src={product.icon}
                       alt={`${product.name} icon`}
-                      width={200}
-                      height={200}
-                      className="flex-shrink-0"
+                      width={500}
+                      height={500}
+                      className="flex-shrink-0 w-full"
                     />
                   </div>
                 </div>
