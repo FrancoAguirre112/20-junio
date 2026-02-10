@@ -46,7 +46,8 @@ const validateFileSecurity = async (file: File) => {
   const bytes = new Uint8Array(arrayBuffer);
   let header = "";
   for (let i = 0; i < bytes.length; i++) {
-    header += bytes[i].toString(16).toUpperCase();
+    // Robustness Fix: Ensure every byte is 2 chars long (e.g. "0A", not "A")
+    header += bytes[i].toString(16).padStart(2, "0").toUpperCase();
   }
 
   // Signatures:
@@ -93,7 +94,7 @@ export const submitQuote = async (
   if (file) {
     const fileExtension = await validateFileSecurity(file); // Validates & gets safe ext
 
-    // SECURITY FIX: Randomize filename completely (Finding #5)
+    // SECURITY FIX: Randomize filename completely
     const uniqueFileName = `${uuidv4()}.${fileExtension}`;
 
     const { error: uploadError } = await supabaseServerClient.storage
