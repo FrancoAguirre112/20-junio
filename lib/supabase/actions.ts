@@ -3,7 +3,6 @@
 import { createHash } from "crypto";
 import { supabaseServerClient } from "./serverClient";
 import { v4 as uuidv4 } from "uuid";
-
 import { sendEmail } from "../email";
 import { QuoteConfirmationEmail } from "@/emails/QuoteConfirmationEmail";
 import { IntegrityReportEmail } from "@/emails/IntegrityReportEmail";
@@ -15,49 +14,74 @@ import {
 } from "../schemas";
 
 // =============================================
-//      CONFIGURATION & RECIPIENTS
+//      SECURITY CONFIGURATION
 // =============================================
 
-// SECURITY: Max file size (5MB) and allowed types
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const ALLOWED_MIME_TYPES = [
-  "application/pdf",
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
+// --- RECIPIENTS (Production) ---
 const QUALITY_RECIPIENTS = [
   "info@20dejunio.com.ar",
   "direccion.tecnica@20dejunio.com.ar",
 ];
 const QUOTE_RECIPIENT = "presupuestos@20dejunio.com.ar";
 const INTEGRITY_RECIPIENT = "info@20dejunio.com.ar";
+
 // =============================================
-//      UTILITY FUNCTIONS
+//      SECURITY UTILITIES (MAGIC BYTES)
 // =============================================
+
+/**
+ * Checks the "Magic Bytes" (File Signature) to ensure the file
+ * is truly a PDF or Image, ignoring the file extension.
+ */
+const validateFileSecurity = async (file: File) => {
+  // 1. Size Check
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error("El archivo excede el tamaño máximo de 5MB.");
+  }
+
+  // 2. Magic Bytes Check (The Pentest Fix)
+  const arrayBuffer = await file.slice(0, 4).arrayBuffer();
+  const bytes = new Uint8Array(arrayBuffer);
+  let header = "";
+  for (let i = 0; i < bytes.length; i++) {
+    header += bytes[i].toString(16).toUpperCase();
+  }
+
+  // Signatures:
+  // PDF: 25 50 44 46 (%PDF)
+  // JPEG: FF D8 FF ...
+  // PNG: 89 50 4E 47 (.PNG)
+  // WEBP: 52 49 46 46 (RIFF) ... starts with RIFF usually
+
+  const isPDF = header.startsWith("25504446");
+  const isJPEG = header.startsWith("FFD8FF");
+  const isPNG = header.startsWith("89504E47");
+  // WEBP is trickier (RIFF....WEBP), but let's allow common RIFF headers
+  const isRIFF = header.startsWith("52494646");
+
+  if (!isPDF && !isJPEG && !isPNG && !isRIFF) {
+    throw new Error("Formato de archivo inválido. Solo PDF o Imágenes.");
+  }
+
+  // 3. Return a clean extension for the filename
+  if (isPDF) return "pdf";
+  if (isJPEG) return "jpg";
+  if (isPNG) return "png";
+  if (isRIFF) return "webp";
+  return "bin";
+};
 
 const createDataHash = (data: unknown): string => {
   const dataString = JSON.stringify(data);
   return createHash("sha256").update(dataString).digest("hex");
 };
 
-const validateFile = (file: File) => {
-  if (file.size > MAX_FILE_SIZE) {
-    throw new Error("El archivo excede el tamaño máximo de 5MB.");
-  }
-  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
-    throw new Error("Tipo de archivo no permitido. Solo PDF o Imágenes.");
-  }
-};
-
 // =============================================
 //      FORM SUBMISSION ACTIONS
 // =============================================
 
-/**
- * Handles the "Get a Quote" form submission.
- */
 export const submitQuote = async (
   formData: QuoteFormData,
   file: File | null,
@@ -67,9 +91,11 @@ export const submitQuote = async (
   let publicUrl = "";
 
   if (file) {
-    validateFile(file); // Security Check
+    const fileExtension = await validateFileSecurity(file); // Validates & gets safe ext
 
-    const uniqueFileName = `${uuidv4()}-${file.name}`;
+    // SECURITY FIX: Randomize filename completely (Finding #5)
+    const uniqueFileName = `${uuidv4()}.${fileExtension}`;
+
     const { error: uploadError } = await supabaseServerClient.storage
       .from("prescriptions")
       .upload(uniqueFileName, file);
@@ -101,7 +127,6 @@ export const submitQuote = async (
 
   if (insertError) throw new Error("Error al guardar la cotización.");
 
-  // Send Email
   await sendEmail({
     to: QUOTE_RECIPIENT,
     subject: `Nueva Solicitud de Cotización de ${formData.fullName}`,
@@ -111,9 +136,6 @@ export const submitQuote = async (
   return newQuote;
 };
 
-/**
- * Handles the "Integrity Report" submission.
- */
 export const submitIntegrityReport = async (
   formData: IntegrityReportFormData,
   file: File | null,
@@ -122,9 +144,11 @@ export const submitIntegrityReport = async (
   let reportFilePath: string | null = null;
 
   if (file) {
-    validateFile(file); // Security Check
+    const fileExtension = await validateFileSecurity(file); // Validates & gets safe ext
 
-    const uniqueFileName = `${uuidv4()}-${file.name}`;
+    // SECURITY FIX: Randomize filename completely
+    const uniqueFileName = `${uuidv4()}.${fileExtension}`;
+
     const { error } = await supabaseServerClient.storage
       .from("reports")
       .upload(uniqueFileName, file);
@@ -153,7 +177,6 @@ export const submitIntegrityReport = async (
     .insert({ report_id_integrity: newReport.id, data_hash: dataHash });
   if (auditError) throw new Error("Error de auditoría.");
 
-  // Send Email (Secure link included in template)
   await sendEmail({
     to: INTEGRITY_RECIPIENT,
     subject: `Nuevo Reporte en Canal de Integridad`,
@@ -168,9 +191,6 @@ export const submitIntegrityReport = async (
   return { reportId: newReport.id, hash: dataHash };
 };
 
-/**
- * Handles the "Quality Incident" submission.
- */
 export const submitQualityIncident = async (
   formData: QualityIncidentFormData,
   ipAddress: string,
@@ -215,7 +235,6 @@ export const submitQualityIncident = async (
 
   if (auditError) throw new Error("Error de auditoría.");
 
-  // Send Email to Multiple Recipients
   await sendEmail({
     to: QUALITY_RECIPIENTS,
     subject: `Nuevo Reporte de Incidencia - ID: ${newIncident.id.substring(0, 8)}`,
