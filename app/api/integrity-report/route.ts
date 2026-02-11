@@ -1,5 +1,7 @@
+// app/api/integrity-report/route.ts
+
 import { NextResponse, NextRequest } from "next/server";
-import { submitIntegrityReport } from "@/lib/supabase/actions";
+import { submitIntegrityReport, verifyRecaptcha } from "@/lib/supabase/actions"; // Asegúrate de exportar verifyRecaptcha desde actions
 import { IntegrityReportSchema } from "@/lib/schemas";
 
 // CONFIGURATION
@@ -25,7 +27,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2. Safe JSON Parsing (Catch syntax errors specifically)
+    // 2. Safe JSON Parsing
     let parsedData;
     try {
       parsedData = JSON.parse(jsonString);
@@ -36,8 +38,27 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3. Zod Validation (Data Content)
-    const validation = IntegrityReportSchema.safeParse(parsedData);
+    // --- NUEVO: Extraer token y verificar reCAPTCHA ---
+    const { gReCaptchaToken, ...cleanData } = parsedData;
+
+    if (!gReCaptchaToken) {
+      return NextResponse.json(
+        { success: false, error: "Falta token de verificación." },
+        { status: 400 },
+      );
+    }
+
+    const isHuman = await verifyRecaptcha(gReCaptchaToken);
+    if (!isHuman) {
+      return NextResponse.json(
+        { success: false, error: "Verificación de bot fallida." },
+        { status: 400 },
+      );
+    }
+    // --------------------------------------------------
+
+    // 3. Zod Validation (Usamos cleanData para no incluir el token en la validación del esquema)
+    const validation = IntegrityReportSchema.safeParse(cleanData);
     if (!validation.success) {
       return NextResponse.json(
         {
@@ -51,7 +72,6 @@ export async function POST(request: NextRequest) {
 
     // 4. File Validation (Security Check)
     if (file) {
-      // Check Size
       if (file.size > MAX_FILE_SIZE) {
         return NextResponse.json(
           { success: false, error: "File size exceeds 5MB limit." },
@@ -59,7 +79,6 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Check Type (MIME)
       if (!ALLOWED_FILE_TYPES.includes(file.type)) {
         return NextResponse.json(
           {
@@ -80,7 +99,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
-    // 7. Secure Error Handling (Don't leak internals)
     console.error("CRITICAL API ERROR:", error);
 
     return NextResponse.json(

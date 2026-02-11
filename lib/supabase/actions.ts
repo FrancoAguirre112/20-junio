@@ -27,6 +27,10 @@ const QUALITY_RECIPIENTS = [
 const QUOTE_RECIPIENT = "presupuestos@20dejunio.com.ar";
 const INTEGRITY_RECIPIENT = "info@20dejunio.com.ar";
 
+// const QUALITY_RECIPIENTS = ["francoaguirretrabajo@gmail.com"];
+// const QUOTE_RECIPIENT = "francoaguirretrabajo@gmail.com";
+// const INTEGRITY_RECIPIENT = "francoaguirretrabajo@gmail.com";
+
 // =============================================
 //      SECURITY UTILITIES (MAGIC BYTES)
 // =============================================
@@ -247,4 +251,27 @@ export const submitQualityIncident = async (
   });
 
   return { reportId: newIncident.id, hash: dataHash };
+};
+
+export const verifyRecaptcha = async (token: string) => {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  if (!secretKey) {
+    console.error("RECAPTCHA_SECRET_KEY is missing.");
+    return false; // Or true in dev if you want to skip it
+  }
+
+  try {
+    const response = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
+      { method: "POST" },
+    );
+    const data = await response.json();
+
+    // Google returns a score between 0.0 (bot) and 1.0 (human).
+    // 0.5 is usually a safe threshold.
+    return data.success && data.score >= 0.5;
+  } catch (error) {
+    console.error("reCAPTCHA verification error:", error);
+    return false;
+  }
 };

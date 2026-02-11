@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import FloatingWhatsapp from "@/components/FloatingWhatsapp";
+import RecaptchaProvider from "@/components/RecaptchaProvider"; // Import your new wrapper
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// This stays here safely in the Server Component
 export const metadata: Metadata = {
   title: "20 de Junio",
   description: "Logística integral para la salud",
@@ -29,11 +30,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <RecaptchaProvider>
+          <div className="min-h-screen">{children}</div>
+        </RecaptchaProvider>
+
         <Navbar />
-        {/* <FloatingWhatsapp /> */}
-        <div className="min-h-screen">{children}</div>
         <Footer />
         <Toaster richColors />
       </body>

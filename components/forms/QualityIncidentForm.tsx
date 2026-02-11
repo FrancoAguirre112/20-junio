@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 import { QualityIncidentFormData, QualityIncidentSchema } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ import {
 } from "@/components/ui/form";
 
 export function QualityIncidentForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<QualityIncidentFormData>({
@@ -60,14 +62,21 @@ export function QualityIncidentForm() {
   const treatmentPrescribed = form.watch("treatmentPrescribed");
 
   async function onSubmit(data: QualityIncidentFormData) {
+    if (!executeRecaptcha) {
+      toast.error("reCAPTCHA no está listo. Intente de nuevo.");
+      return;
+    }
+
     setIsSubmitting(true);
     toast.info("Enviando incidencia...");
 
     try {
+      const gReCaptchaToken = await executeRecaptcha("quality_incident_submit");
+
       const response = await fetch("/api/quality-incident", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, gReCaptchaToken }),
       });
 
       const result = await response.json();

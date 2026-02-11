@@ -1,9 +1,8 @@
-import { NextResponse, NextRequest } from "next/server"; // 1. Import NextRequest
-import { submitQuote } from "@/lib/supabase/actions";
+import { NextResponse, NextRequest } from "next/server";
+import { submitQuote, verifyRecaptcha } from "@/lib/supabase/actions"; // 1. Importar la función de verificación
 import { QuoteFormSchema } from "@/lib/schemas";
 
 export async function POST(request: NextRequest) {
-  // 2. Use NextRequest as the type
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
@@ -12,13 +11,25 @@ export async function POST(request: NextRequest) {
     if (!jsonString) {
       return NextResponse.json(
         { success: false, error: "Missing form data." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // 1. Validate the form data against the Zod schema
+    // 2. Parsear JSON y extraer el token de reCAPTCHA
     const parsedData = JSON.parse(jsonString);
-    const validation = QuoteFormSchema.safeParse(parsedData);
+    const { gReCaptchaToken, ...cleanData } = parsedData;
+
+    // 3. VERIFICACIÓN reCAPTCHA (Obligatorio para el pentest)
+    const isHuman = await verifyRecaptcha(gReCaptchaToken);
+    if (!isHuman) {
+      return NextResponse.json(
+        { success: false, error: "Verificación de bot fallida." },
+        { status: 400 },
+      );
+    }
+
+    // 4. Validar los datos limpios (sin el token) contra el esquema Zod
+    const validation = QuoteFormSchema.safeParse(cleanData);
 
     if (!validation.success) {
       return NextResponse.json(
@@ -27,15 +38,15 @@ export async function POST(request: NextRequest) {
           error: "Invalid form data.",
           details: validation.error.format(),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // 2. FIX: Get the user's IP address from headers
+    // 5. Obtener la dirección IP del usuario desde los encabezados
     const forwardedFor = request.headers.get("x-forwarded-for");
     const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown";
 
-    // 3. Call the server-side action to handle the submission
+    // 6. Llamar a la acción del lado del servidor para procesar la cotización
     const result = await submitQuote(validation.data, file, ip);
 
     return NextResponse.json({ success: true, data: result });
@@ -45,7 +56,7 @@ export async function POST(request: NextRequest) {
       error instanceof Error ? error.message : "An unknown error occurred.";
     return NextResponse.json(
       { success: false, error: errorMessage },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

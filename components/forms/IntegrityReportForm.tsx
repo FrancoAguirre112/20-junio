@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 import { IntegrityReportFormData, IntegrityReportSchema } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/form";
 
 export function IntegrityReportForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha(); // LLAMADA CORRECTA
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<IntegrityReportFormData>({
@@ -31,33 +33,48 @@ export function IntegrityReportForm() {
   });
 
   async function onSubmit(data: IntegrityReportFormData) {
-    setIsSubmitting(true);
-    const formData = new FormData();
-    const fileInput = document.getElementById("reportFile") as HTMLInputElement;
-
-    if (fileInput?.files?.[0]) {
-      formData.append("file", fileInput.files[0]);
+    if (!executeRecaptcha) {
+      toast.error("reCAPTCHA no está listo. Intente de nuevo.");
+      return;
     }
-    formData.append("jsonData", JSON.stringify(data));
+
+    setIsSubmitting(true);
+    toast.info("Enviando reporte...");
 
     try {
+      // 1. Obtener Token
+      const gReCaptchaToken = await executeRecaptcha("integrity_report_submit");
+
+      // 2. Preparar FormData
+      const formData = new FormData();
+      const fileInput = document.getElementById(
+        "reportFile",
+      ) as HTMLInputElement;
+
+      if (fileInput?.files?.[0]) {
+        formData.append("file", fileInput.files[0]);
+      }
+
+      // 3. Empaquetar Token dentro del JSON
+      formData.append("jsonData", JSON.stringify({ ...data, gReCaptchaToken }));
+
       const response = await fetch("/api/integrity-report", {
         method: "POST",
-        body: formData,
+        body: formData, // SE ENVÍA EL FORMDATA (contiene archivo y json)
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Something went wrong");
+        throw new Error(result.error || "Algo salió mal");
       }
 
       toast.success("Reporte enviado con éxito.");
       form.reset();
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An unknown error occurred.";
-      toast.error(`Error: ${errorMessage}`);
+      toast.error(
+        `Error: ${error instanceof Error ? error.message : "Error desconocido"}`,
+      );
     } finally {
       setIsSubmitting(false);
     }

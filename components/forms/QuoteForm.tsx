@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3"; // Importado correctamente
 
 import { QuoteFormData, QuoteFormSchema } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import {
 import Link from "next/link";
 
 export function QuoteForm() {
+  const { executeRecaptcha } = useGoogleReCaptcha(); // LLAMADA CORRECTA: Al nivel superior
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<QuoteFormData>({
@@ -37,40 +39,48 @@ export function QuoteForm() {
   });
 
   async function onSubmit(data: QuoteFormData) {
-    setIsSubmitting(true);
-
-    // We use FormData to handle file uploads
-    const formData = new FormData();
-
-    // Append the file from the file input
-    const fileInput = document.getElementById(
-      "prescriptionFile",
-    ) as HTMLInputElement;
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      formData.append("file", fileInput.files[0]);
+    if (!executeRecaptcha) {
+      toast.error("reCAPTCHA no está listo. Intente de nuevo.");
+      return;
     }
 
-    // Append the rest of the form data as a JSON string
-    formData.append("jsonData", JSON.stringify(data));
+    setIsSubmitting(true);
+    toast.info("Enviando solicitud...");
 
     try {
+      // 1. Obtener Token
+      const gReCaptchaToken = await executeRecaptcha("quote_submit");
+
+      // 2. Preparar FormData para enviar Archivo + JSON
+      const formData = new FormData();
+      const fileInput = document.getElementById(
+        "prescriptionFile",
+      ) as HTMLInputElement;
+
+      if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        formData.append("file", fileInput.files[0]);
+      }
+
+      // 3. Incluir el Token DENTRO del JSON para que el API lo encuentre
+      formData.append("jsonData", JSON.stringify({ ...data, gReCaptchaToken }));
+
       const response = await fetch("/api/quote", {
         method: "POST",
-        body: formData,
+        body: formData, // SE ENVÍA EL FORMDATA COMPLETO
       });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Something went wrong");
+        throw new Error(result.error || "Algo salió mal");
       }
 
-      toast.success("Consulta enviada con éxito!");
-      form.reset(); // Clear the form on success
+      toast.success("¡Consulta enviada con éxito!");
+      form.reset();
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An unknown error occurred.";
-      toast.error(`Error: ${errorMessage}`);
+      toast.error(
+        `Error: ${error instanceof Error ? error.message : "Error desconocido"}`,
+      );
     } finally {
       setIsSubmitting(false);
     }
