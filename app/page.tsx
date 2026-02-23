@@ -26,9 +26,11 @@ import Fade from "embla-carousel-fade";
 import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 
-import eye1 from "@/public/assets/images/eye1.webp";
-import eye2 from "@/public/assets/images/eye2.webp";
-import eye3 from "@/public/assets/images/eye3.webp";
+import eye1 from "@/public/assets/images/banner1.png";
+import eye2 from "@/public/assets/images/banner2.png";
+import eye3 from "@/public/assets/images/banner3.png";
+import eye4 from "@/public/assets/images/banner4.png";
+import eye5 from "@/public/assets/images/banner5.png";
 
 const slugify = (text: string) => {
   return text
@@ -137,6 +139,20 @@ export default function HomePage() {
               <div
                 className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
                 style={{ backgroundImage: `url(${eye3.src})` }}
+              ></div>
+            </CarouselItem>
+            {/* Slide 4 */}
+            <CarouselItem className="h-full">
+              <div
+                className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
+                style={{ backgroundImage: `url(${eye4.src})` }}
+              ></div>
+            </CarouselItem>
+            {/* Slide 5 */}
+            <CarouselItem className="h-full">
+              <div
+                className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
+                style={{ backgroundImage: `url(${eye5.src})` }}
               ></div>
             </CarouselItem>
           </CarouselContent>
