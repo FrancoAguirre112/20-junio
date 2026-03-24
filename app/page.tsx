@@ -31,6 +31,8 @@ import eye2 from "@/public/assets/images/banner2.png";
 import eye3 from "@/public/assets/images/banner3.png";
 import eye4 from "@/public/assets/images/banner4.png";
 import eye5 from "@/public/assets/images/banner5.png";
+import eye6 from "@/public/assets/images/banner6.png";
+
 
 const slugify = (text: string) => {
   return text
@@ -78,6 +80,7 @@ export default function HomePage() {
             alt="spinner"
             width={1000}
             height={1000}
+            style={{ width: "90dvh", height: "90dvh" }}
           />
           <Image
             className="top-1/2 left-1/2 z-20 absolute -translate-x-1/2 -translate-y-1/2 animate-spin-fast"
@@ -85,6 +88,7 @@ export default function HomePage() {
             alt="spinner"
             width={1000}
             height={1000}
+            style={{ width: "90dvh", height: "90dvh" }}
           />
           <Image
             className="top-1/2 left-1/2 z-20 absolute -translate-x-1/2 -translate-y-1/2 animate-spin-slow"
@@ -92,6 +96,7 @@ export default function HomePage() {
             alt="spinner"
             width={1000}
             height={1000}
+            style={{ width: "90dvh", height: "90dvh" }}
           />
           <Image
             className="top-1/2 left-1/2 z-20 absolute -translate-x-1/2 -translate-y-1/2 animate-spin-slow2"
@@ -99,6 +104,7 @@ export default function HomePage() {
             alt="spinner"
             width={1000}
             height={1000}
+            style={{ width: "90dvh", height: "90dvh" }}
           />
         </div>
 
@@ -153,6 +159,13 @@ export default function HomePage() {
               <div
                 className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
                 style={{ backgroundImage: `url(${eye5.src})` }}
+              ></div>
+            </CarouselItem>
+            {/* Slide 6 */}
+            <CarouselItem className="h-full">
+              <div
+                className="relative flex justify-center items-center bg-cover bg-center w-full h-full"
+                style={{ backgroundImage: `url(${eye6.src})` }}
               ></div>
             </CarouselItem>
           </CarouselContent>
