@@ -43,8 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 5. Obtener la dirección IP del usuario desde los encabezados
-    const forwardedFor = request.headers.get("x-forwarded-for");
-    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown";
+    const ip = request.headers.get("x-real-ip") ?? "unknown";
 
     // 6. Llamar a la acción del lado del servidor para procesar la cotización
     const result = await submitQuote(validation.data, file, ip);

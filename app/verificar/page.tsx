@@ -137,38 +137,51 @@ function VerifyContent() {
   const [reportId, setReportId] = useState(urlId || "");
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
-  // 1. Check for Session on Mount
+  // 1. Check for existing session on mount
   useEffect(() => {
-    const savedPassword = sessionStorage.getItem("admin_session_key");
-    if (savedPassword) {
-      setPassword(savedPassword);
-      setIsAuthenticated(true);
-      // If we have an ID in URL and we are authed, verify immediately
-      if (urlId) {
-        verifyReport(urlId, savedPassword);
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/auth-check");
+        if (res.ok) {
+          setIsAuthenticated(true);
+          if (urlId) verifyReport(urlId);
+        }
+      } catch {
+        // Not authenticated
+      } finally {
+        setCheckingSession(false);
       }
-    }
+    };
+    checkAuth();
   }, [urlId]);
 
   // 2. Login Handler
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password) return toast.error("Ingrese la clave");
 
-    sessionStorage.setItem("admin_session_key", password);
-    setIsAuthenticated(true);
-    toast.success("Sesión iniciada");
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
 
-    if (reportId) {
-      verifyReport(reportId, password);
+    if (res.ok) {
+      setIsAuthenticated(true);
+      setPassword("");
+      toast.success("Sesión iniciada");
+      if (reportId) verifyReport(reportId);
+    } else {
+      toast.error("Clave incorrecta");
     }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("admin_session_key");
+  const handleLogout = async () => {
+    await fetch("/api/logout", { method: "POST" });
     setIsAuthenticated(false);
     setPassword("");
     setResult(null);
@@ -176,22 +189,22 @@ function VerifyContent() {
   };
 
   // 3. Verification Logic
-  const verifyReport = async (id: string, key: string) => {
+  const verifyReport = async (id: string) => {
     setLoading(true);
     setResult(null);
     try {
       const res = await fetch("/api/verify-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reportId: id, accessCode: key }),
+        body: JSON.stringify({ reportId: id }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
         if (res.status === 401) {
-          handleLogout(); // Force logout if password changed/wrong
-          throw new Error("Clave inválida o expirada");
+          handleLogout();
+          throw new Error("Sesión expirada o inválida");
         }
         throw new Error(data.message || "Error al verificar");
       }
@@ -209,8 +222,14 @@ function VerifyContent() {
 
   const handleManualSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (reportId) verifyReport(reportId, password);
+    if (reportId) verifyReport(reportId);
   };
+
+  if (checkingSession) {
+    return (
+      <div className="p-20 text-center">Verificando sesión...</div>
+    );
+  }
 
   // --- RENDER: LOGIN SCREEN ---
   if (!isAuthenticated) {

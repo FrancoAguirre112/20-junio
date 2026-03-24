@@ -91,8 +91,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 5. IP Handling
-    const forwardedFor = request.headers.get("x-forwarded-for");
-    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown";
+    const ip = request.headers.get("x-real-ip") ?? "unknown";
 
     // 6. Action Call
     const result = await submitIntegrityReport(validation.data, file, ip);

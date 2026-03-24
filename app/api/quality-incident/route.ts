@@ -30,9 +30,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2. FIX: Get IP address from headers
-    const forwardedFor = request.headers.get("x-forwarded-for");
-    const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : "unknown";
+    // 2. Get IP address from platform header
+    const ip = request.headers.get("x-real-ip") ?? "unknown";
 
     // 3. Call the server-side action
     const result = await submitQualityIncident(

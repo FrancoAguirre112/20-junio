@@ -2,11 +2,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createHash } from "crypto";
+import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
 import { supabaseServerClient } from "@/lib/supabase/serverClient";
 
 const VerifySchema = z.object({
   reportId: z.string().uuid(),
-  accessCode: z.string().min(1),
 });
 
 const createVerifiableObject = (reportData: any) => {
@@ -47,13 +48,31 @@ export async function POST(request: Request) {
       );
     }
 
-    const { reportId, accessCode } = validation.data;
+    const { reportId } = validation.data;
 
-    // SECURITY CHECK
-    const adminPassword = process.env.ADMIN_ACCESS_PASSWORD;
-    if (!adminPassword || accessCode !== adminPassword) {
+    // SECURITY CHECK — Verify JWT session cookie
+    const secret = process.env.SESSION_SECRET;
+    if (!secret) {
+      return NextResponse.json(
+        { status: "error", message: "Error de configuración del servidor." },
+        { status: 500 },
+      );
+    }
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get("session")?.value;
+    if (!token) {
       return NextResponse.json(
         { status: "error", message: "Credenciales inválidas." },
+        { status: 401 },
+      );
+    }
+
+    try {
+      await jwtVerify(token, new TextEncoder().encode(secret));
+    } catch {
+      return NextResponse.json(
+        { status: "error", message: "Sesión expirada o inválida." },
         { status: 401 },
       );
     }

@@ -1,0 +1,4 @@
+Contact: mailto:info@20dejunio.com.ar
+Expires: 2027-03-16T00:00:00.000Z
+Preferred-Languages: es, en
+Canonical: https://www.20dejunio.com.ar/.well-known/security.txt

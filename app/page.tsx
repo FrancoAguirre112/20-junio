@@ -33,7 +33,6 @@ import eye4 from "@/public/assets/images/banner4.png";
 import eye5 from "@/public/assets/images/banner5.png";
 import eye6 from "@/public/assets/images/banner6.png";
 
-
 const slugify = (text: string) => {
   return text
     .toString()
@@ -75,20 +74,12 @@ export default function HomePage() {
       <section className="relative w-full h-[70dvh]">
         <div className="select-none">
           <Image
-            className="top-1/2 left-1/2 z-20 absolute -translate-x-1/2 -translate-y-1/2"
-            src={"/assets/images/banner_cir1.webp"}
-            alt="spinner"
-            width={1000}
-            height={1000}
-            style={{ width: "90dvh", height: "90dvh" }}
-          />
-          <Image
             className="top-1/2 left-1/2 z-20 absolute -translate-x-1/2 -translate-y-1/2 animate-spin-fast"
             src={"/assets/images/banner_cir2.webp"}
             alt="spinner"
             width={1000}
             height={1000}
-            style={{ width: "90dvh", height: "90dvh" }}
+            style={{ width: "min(90dvh, 100vw)", height: "min(90dvh, 100vw)" }}
           />
           <Image
             className="top-1/2 left-1/2 z-20 absolute -translate-x-1/2 -translate-y-1/2 animate-spin-slow"
@@ -96,7 +87,7 @@ export default function HomePage() {
             alt="spinner"
             width={1000}
             height={1000}
-            style={{ width: "90dvh", height: "90dvh" }}
+            style={{ width: "min(90dvh, 100vw)", height: "min(90dvh, 100vw)" }}
           />
           <Image
             className="top-1/2 left-1/2 z-20 absolute -translate-x-1/2 -translate-y-1/2 animate-spin-slow2"
@@ -104,7 +95,7 @@ export default function HomePage() {
             alt="spinner"
             width={1000}
             height={1000}
-            style={{ width: "90dvh", height: "90dvh" }}
+            style={{ width: "min(90dvh, 100vw)", height: "min(90dvh, 100vw)" }}
           />
         </div>
 
