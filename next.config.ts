@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self'",
-              "frame-src https://www.google.com",
+              "frame-src https://www.google.com https://maps.google.com",
               "connect-src 'self' https://www.google.com https://*.supabase.co",
               "frame-ancestors 'none'",
             ].join("; "),

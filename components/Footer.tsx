@@ -35,7 +35,7 @@ const complianceLinks = [
     label: "Canal de Integridad y Gestión de No Conformidades",
   },
   {
-    href: "/assets/20 DE JUNIO - CODIGO DE ETICA.pdf",
+    href: "/assets/codigo_etica.pdf",
     label: "Código de Ética",
   },
 ];
