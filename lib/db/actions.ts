@@ -27,16 +27,23 @@ import {
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 // --- RECIPIENTS (Production) ---
+// These two receive every form submission across all three channels.
+const ALWAYS_CC = [
+  "ariel.barreto@20dejunio.com.ar",
+  "ana.russo@20dejunio.com.ar",
+];
+
 const QUALITY_RECIPIENTS = [
   "info@20dejunio.com.ar",
   "direccion.tecnica@20dejunio.com.ar",
+  ...ALWAYS_CC,
 ];
-const QUOTE_RECIPIENT = "presupuestos@20dejunio.com.ar";
-const INTEGRITY_RECIPIENT = "info@20dejunio.com.ar";
+const QUOTE_RECIPIENT = ["presupuesto@20dejunio.com.ar", ...ALWAYS_CC];
+const INTEGRITY_RECIPIENT = ["info@20dejunio.com.ar", ...ALWAYS_CC];
 
 // const QUALITY_RECIPIENTS = ["francoaguirretrabajo@gmail.com"];
-// const QUOTE_RECIPIENT = "francoaguirretrabajo@gmail.com";
-// const INTEGRITY_RECIPIENT = "francoaguirretrabajo@gmail.com";
+// const QUOTE_RECIPIENT = ["francoaguirretrabajo@gmail.com"];
+// const INTEGRITY_RECIPIENT = ["francoaguirretrabajo@gmail.com"];
 
 // =============================================
 //      SECURITY UTILITIES (MAGIC BYTES)
