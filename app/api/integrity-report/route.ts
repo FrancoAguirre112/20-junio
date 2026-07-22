@@ -1,7 +1,7 @@
 // app/api/integrity-report/route.ts
 
 import { NextResponse, NextRequest } from "next/server";
-import { submitIntegrityReport, verifyRecaptcha } from "@/lib/supabase/actions"; // Asegúrate de exportar verifyRecaptcha desde actions
+import { submitIntegrityReport, verifyRecaptcha } from "@/lib/db/actions"; // Asegúrate de exportar verifyRecaptcha desde actions
 import { IntegrityReportSchema } from "@/lib/schemas";
 
 // CONFIGURATION

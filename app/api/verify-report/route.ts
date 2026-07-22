@@ -1,40 +1,56 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createHash } from "crypto";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { supabaseServerClient } from "@/lib/supabase/serverClient";
+import { eq, or } from "drizzle-orm";
+import { db } from "@/lib/db";
+import {
+  reportAuditLog,
+  reportesIntegridad,
+  incidenciasCalidad,
+} from "@/lib/db/schema";
+import { getPrivateFileUrl } from "@/lib/cloudinary";
 
 const VerifySchema = z.object({
   reportId: z.string().uuid(),
 });
 
-const createVerifiableObject = (reportData: any) => {
-  return {
-    contact_info: reportData.contact_info,
-    event_description: reportData.event_description,
-    patient_contact: reportData.patient_contact,
-    procedure: reportData.procedure,
-    event_timing: reportData.event_timing,
-    surgery_completed: reportData.surgery_completed,
-    device_info: reportData.device_info,
-    patient_initials: reportData.patient_initials,
-    age: reportData.age,
-    dob: reportData.dob,
-    sex: reportData.sex,
-    medical_history: reportData.medical_history,
-    patient_impact: reportData.patient_impact,
-    medical_intervention_required: reportData.medical_intervention_required,
-    intervention_details: reportData.intervention_details,
-    diagnosis: reportData.diagnosis,
-    was_hospitalized: reportData.was_hospitalized,
-    treatment_prescribed: reportData.treatment_prescribed,
-    treatment_details: reportData.treatment_details,
-    patient_status: reportData.patient_status,
-    ip_address: reportData.ip_address,
-  };
-};
+// Snake_case shapes are the canonical objects for the SHA-256 audit hash —
+// key names AND order must match what lib/db/actions.ts hashed at insert time.
+const toVerifiableIntegrity = (
+  row: typeof reportesIntegridad.$inferSelect,
+) => ({
+  full_name: row.fullName,
+  contact_info: row.contactInfo,
+  report_description: row.reportDescription,
+  file_path: row.filePath,
+  ip_address: row.ipAddress,
+});
+
+const toVerifiableQuality = (row: typeof incidenciasCalidad.$inferSelect) => ({
+  contact_info: row.contactInfo,
+  event_description: row.eventDescription,
+  patient_contact: row.patientContact,
+  procedure: row.procedure,
+  event_timing: row.eventTiming,
+  surgery_completed: row.surgeryCompleted,
+  device_info: row.deviceInfo,
+  patient_initials: row.patientInitials,
+  age: row.age,
+  dob: row.dob,
+  sex: row.sex,
+  medical_history: row.medicalHistory,
+  patient_impact: row.patientImpact,
+  medical_intervention_required: row.medicalInterventionRequired,
+  intervention_details: row.interventionDetails,
+  diagnosis: row.diagnosis,
+  was_hospitalized: row.wasHospitalized,
+  treatment_prescribed: row.treatmentPrescribed,
+  treatment_details: row.treatmentDetails,
+  patient_status: row.patientStatus,
+  ip_address: row.ipAddress,
+});
 
 export async function POST(request: Request) {
   try {
@@ -78,44 +94,44 @@ export async function POST(request: Request) {
     }
 
     // 1. Fetch Audit Log
-    const { data: auditLog, error: auditError } = await supabaseServerClient
-      .from("report_audit_log")
-      .select("*")
-      .or(`report_id_integrity.eq.${reportId},report_id_quality.eq.${reportId}`)
-      .single();
+    const auditLog = await db.query.reportAuditLog.findFirst({
+      where: or(
+        eq(reportAuditLog.reportIdIntegrity, reportId),
+        eq(reportAuditLog.reportIdQuality, reportId),
+      ),
+    });
 
-    if (auditError || !auditLog) {
+    if (!auditLog) {
       return NextResponse.json({
         status: "not_found",
         message: "No se encontró registro de auditoría para este ID.",
       });
     }
 
-    const originalHash = auditLog.data_hash;
-    const submissionDate = auditLog.created_at;
+    const originalHash = auditLog.dataHash;
+    const submissionDate = auditLog.createdAt;
 
     // 2. Fetch Original Data
-    let reportData: any = null;
-    let isIntegrityReport = false;
+    let objectToHash: Record<string, unknown> | null = null;
+    let filePath: string | null = null;
+    const isIntegrityReport = !!auditLog.reportIdIntegrity;
 
-    if (auditLog.report_id_integrity) {
-      const { data } = await supabaseServerClient
-        .from("reportes_integridad")
-        .select("*")
-        .eq("id", reportId)
-        .single();
-      reportData = data;
-      isIntegrityReport = true;
-    } else if (auditLog.report_id_quality) {
-      const { data } = await supabaseServerClient
-        .from("incidencias_calidad")
-        .select("*")
-        .eq("id", reportId)
-        .single();
-      reportData = data;
+    if (isIntegrityReport) {
+      const row = await db.query.reportesIntegridad.findFirst({
+        where: eq(reportesIntegridad.id, reportId),
+      });
+      if (row) {
+        objectToHash = toVerifiableIntegrity(row);
+        filePath = row.filePath;
+      }
+    } else if (auditLog.reportIdQuality) {
+      const row = await db.query.incidenciasCalidad.findFirst({
+        where: eq(incidenciasCalidad.id, reportId),
+      });
+      if (row) objectToHash = toVerifiableQuality(row);
     }
 
-    if (!reportData) {
+    if (!objectToHash) {
       return NextResponse.json({
         status: "not_found",
         message: "El registro original no se encuentra (posible eliminación).",
@@ -123,16 +139,6 @@ export async function POST(request: Request) {
     }
 
     // 3. Re-Verify Hash
-    const objectToHash = isIntegrityReport
-      ? {
-          full_name: reportData.full_name,
-          contact_info: reportData.contact_info,
-          report_description: reportData.report_description,
-          file_path: reportData.file_path,
-          ip_address: reportData.ip_address,
-        }
-      : createVerifiableObject(reportData);
-
     const recalculatedHash = createHash("sha256")
       .update(JSON.stringify(objectToHash))
       .digest("hex");
@@ -142,13 +148,13 @@ export async function POST(request: Request) {
 
     // 4. Generate Signed URL for File (If applicable)
     let fileUrl = null;
-    if (isIntegrityReport && reportData.file_path) {
-      // Create a temporary link valid for 1 hour (3600 seconds)
-      const { data: signedData } = await supabaseServerClient.storage
-        .from("reports")
-        .createSignedUrl(reportData.file_path, 3600);
-
-      if (signedData) fileUrl = signedData.signedUrl;
+    if (isIntegrityReport && filePath) {
+      // Temporary Cloudinary link valid for 1 hour (3600 seconds)
+      try {
+        fileUrl = getPrivateFileUrl(filePath, 3600);
+      } catch (e) {
+        console.error("Signed URL error:", e);
+      }
     }
 
     return NextResponse.json({
@@ -157,7 +163,7 @@ export async function POST(request: Request) {
         verificationStatus === "verified"
           ? "VERIFICADO: El reporte es auténtico."
           : "ALERTA: El reporte ha sido modificado.",
-      data: reportData,
+      data: objectToHash,
       timestamp: submissionDate,
       type: isIntegrityReport ? "integrity" : "quality",
       fileUrl, // Return the temporary secure link

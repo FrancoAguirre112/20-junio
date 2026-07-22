@@ -1,8 +1,15 @@
-// lib/supabase/actions.ts
+// lib/db/actions.ts
 
 import { createHash } from "crypto";
-import { supabaseServerClient } from "./serverClient";
 import { v4 as uuidv4 } from "uuid";
+import { db } from "./index";
+import {
+  cotizaciones,
+  reportesIntegridad,
+  incidenciasCalidad,
+  reportAuditLog,
+} from "./schema";
+import { uploadPublicFile, uploadPrivateFile } from "../cloudinary";
 import { sendEmail } from "../email";
 import { QuoteConfirmationEmail } from "@/emails/QuoteConfirmationEmail";
 import { IntegrityReportEmail } from "@/emails/IntegrityReportEmail";
@@ -101,36 +108,34 @@ export const submitQuote = async (
     // SECURITY FIX: Randomize filename completely
     const uniqueFileName = `${uuidv4()}.${fileExtension}`;
 
-    const { error: uploadError } = await supabaseServerClient.storage
-      .from("prescriptions")
-      .upload(uniqueFileName, file);
-    if (uploadError) throw new Error("Error al subir el archivo.");
+    const uploaded = await uploadPublicFile(
+      file,
+      "prescriptions",
+      uniqueFileName,
+    ).catch(() => {
+      throw new Error("Error al subir el archivo.");
+    });
 
-    prescriptionFilePath = uniqueFileName;
-
-    const { data: urlData } = supabaseServerClient.storage
-      .from("prescriptions")
-      .getPublicUrl(uniqueFileName);
-
-    if (urlData) publicUrl = urlData.publicUrl;
+    prescriptionFilePath = uploaded.filePath;
+    publicUrl = uploaded.url;
   }
 
-  const { data: newQuote, error: insertError } = await supabaseServerClient
-    .from("cotizaciones")
-    .insert({
-      full_name: formData.fullName,
+  const [newQuote] = await db
+    .insert(cotizaciones)
+    .values({
+      fullName: formData.fullName,
       phone: formData.phone,
       email: formData.email,
       institution: formData.institution,
-      requesting_professional: formData.requestingProfessional,
+      requestingProfessional: formData.requestingProfessional,
       observations: formData.observations,
-      prescription_file_path: prescriptionFilePath,
-      ip_address: ipAddress,
+      prescriptionFilePath,
+      ipAddress,
     })
-    .select()
-    .single();
-
-  if (insertError) throw new Error("Error al guardar la cotización.");
+    .returning()
+    .catch(() => {
+      throw new Error("Error al guardar la cotización.");
+    });
 
   await sendEmail({
     to: QUOTE_RECIPIENT,
@@ -154,13 +159,18 @@ export const submitIntegrityReport = async (
     // SECURITY FIX: Randomize filename completely
     const uniqueFileName = `${uuidv4()}.${fileExtension}`;
 
-    const { error } = await supabaseServerClient.storage
-      .from("reports")
-      .upload(uniqueFileName, file);
-    if (error) throw new Error("Error al subir evidencia.");
-    reportFilePath = uniqueFileName;
+    const uploaded = await uploadPrivateFile(
+      file,
+      "reports",
+      uniqueFileName,
+    ).catch(() => {
+      throw new Error("Error al subir evidencia.");
+    });
+    reportFilePath = uploaded.filePath;
   }
 
+  // Snake_case shape kept intentionally: it is the canonical object for the
+  // SHA-256 audit hash and must match verify-report's reconstruction.
   const reportToInsert = {
     full_name: formData.fullName,
     contact_info: formData.contactInfo,
@@ -169,18 +179,27 @@ export const submitIntegrityReport = async (
     ip_address: ipAddress,
   };
 
-  const { data: newReport, error: reportError } = await supabaseServerClient
-    .from("reportes_integridad")
-    .insert(reportToInsert)
-    .select()
-    .single();
-  if (reportError) throw new Error("Error al guardar reporte.");
+  const [newReport] = await db
+    .insert(reportesIntegridad)
+    .values({
+      fullName: reportToInsert.full_name,
+      contactInfo: reportToInsert.contact_info,
+      reportDescription: reportToInsert.report_description,
+      filePath: reportToInsert.file_path,
+      ipAddress: reportToInsert.ip_address,
+    })
+    .returning()
+    .catch(() => {
+      throw new Error("Error al guardar reporte.");
+    });
 
   const dataHash = createDataHash(reportToInsert);
-  const { error: auditError } = await supabaseServerClient
-    .from("report_audit_log")
-    .insert({ report_id_integrity: newReport.id, data_hash: dataHash });
-  if (auditError) throw new Error("Error de auditoría.");
+  await db
+    .insert(reportAuditLog)
+    .values({ reportIdIntegrity: newReport.id, dataHash })
+    .catch(() => {
+      throw new Error("Error de auditoría.");
+    });
 
   await sendEmail({
     to: INTEGRITY_RECIPIENT,
@@ -200,6 +219,8 @@ export const submitQualityIncident = async (
   formData: QualityIncidentFormData,
   ipAddress: string,
 ) => {
+  // Snake_case shape kept intentionally: it is the canonical object for the
+  // SHA-256 audit hash and must match verify-report's reconstruction.
   const incidentForDb = {
     contact_info: formData.contactInfo,
     event_description: formData.eventDescription,
@@ -225,20 +246,44 @@ export const submitQualityIncident = async (
     ip_address: ipAddress,
   };
 
-  const { data: newIncident, error: incidentError } = await supabaseServerClient
-    .from("incidencias_calidad")
-    .insert(incidentForDb)
-    .select()
-    .single();
-
-  if (incidentError) throw new Error("Error al guardar incidencia.");
+  const [newIncident] = await db
+    .insert(incidenciasCalidad)
+    .values({
+      contactInfo: incidentForDb.contact_info,
+      eventDescription: incidentForDb.event_description,
+      patientContact: incidentForDb.patient_contact,
+      procedure: incidentForDb.procedure,
+      eventTiming: incidentForDb.event_timing,
+      surgeryCompleted: incidentForDb.surgery_completed,
+      deviceInfo: incidentForDb.device_info,
+      patientInitials: incidentForDb.patient_initials,
+      age: incidentForDb.age,
+      dob: incidentForDb.dob,
+      sex: incidentForDb.sex,
+      medicalHistory: incidentForDb.medical_history,
+      patientImpact: incidentForDb.patient_impact,
+      medicalInterventionRequired:
+        incidentForDb.medical_intervention_required,
+      interventionDetails: incidentForDb.intervention_details,
+      diagnosis: incidentForDb.diagnosis,
+      wasHospitalized: incidentForDb.was_hospitalized,
+      treatmentPrescribed: incidentForDb.treatment_prescribed,
+      treatmentDetails: incidentForDb.treatment_details,
+      patientStatus: incidentForDb.patient_status,
+      ipAddress: incidentForDb.ip_address,
+    })
+    .returning()
+    .catch(() => {
+      throw new Error("Error al guardar incidencia.");
+    });
 
   const dataHash = createDataHash(incidentForDb);
-  const { error: auditError } = await supabaseServerClient
-    .from("report_audit_log")
-    .insert({ report_id_quality: newIncident.id, data_hash: dataHash });
-
-  if (auditError) throw new Error("Error de auditoría.");
+  await db
+    .insert(reportAuditLog)
+    .values({ reportIdQuality: newIncident.id, dataHash })
+    .catch(() => {
+      throw new Error("Error de auditoría.");
+    });
 
   await sendEmail({
     to: QUALITY_RECIPIENTS,

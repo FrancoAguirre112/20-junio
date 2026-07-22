@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
               "img-src 'self' data: https:",
               "font-src 'self'",
               "frame-src https://www.google.com https://maps.google.com",
-              "connect-src 'self' https://www.google.com https://*.supabase.co",
+              "connect-src 'self' https://www.google.com",
               "frame-ancestors 'none'",
             ].join("; "),
           },

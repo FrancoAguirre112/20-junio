@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { submitQuote, verifyRecaptcha } from "@/lib/supabase/actions"; // 1. Importar la función de verificación
+import { submitQuote, verifyRecaptcha } from "@/lib/db/actions"; // 1. Importar la función de verificación
 import { QuoteFormSchema } from "@/lib/schemas";
 
 export async function POST(request: NextRequest) {

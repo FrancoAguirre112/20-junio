@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server"; // 1. Import NextRequest
-import { submitQualityIncident } from "@/lib/supabase/actions";
+import { submitQualityIncident } from "@/lib/db/actions";
 import { QualityIncidentSchema } from "@/lib/schemas";
-import { verifyRecaptcha } from "@/lib/supabase/actions";
+import { verifyRecaptcha } from "@/lib/db/actions";
 
 export async function POST(request: NextRequest) {
   // 2. Use NextRequest as the type
