@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RecaptchaProvider from "@/components/RecaptchaProvider"; // Import your new wrapper
+import { SITE_URL } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,6 +19,7 @@ const geistMono = Geist_Mono({
 
 // This stays here safely in the Server Component
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "20 de Junio",
   description: "Logística integral para la salud",
 };

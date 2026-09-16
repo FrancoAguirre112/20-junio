@@ -78,12 +78,6 @@ export default function SobreNosotrosPage() {
       <main className="mt-20">
         {/* --- Hero Section (Unchanged) --- */}
         <header className="relative bg-main-500 py-20 text-white">
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-20"
-            style={{
-              backgroundImage: "url(/assets/images/office-background.webp)",
-            }}
-          ></div>
           <div className="relative mx-auto px-4 max-w-4xl text-center">
             <h1 className="font-bold text-4xl md:text-5xl">Sobre Nosotros</h1>
             <p className="mt-4 text-gray-100 text-lg">
