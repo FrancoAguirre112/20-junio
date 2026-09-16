@@ -121,8 +121,8 @@ export default function ProductosPage() {
                 <Image
                   src="/assets/images/insumos.webp"
                   alt="Insumos Icon"
-                  width={500}
-                  height={500}
+                  width={256}
+                  height={256}
                   className={`w-full h-full object-contain ${
                     selectedCategory === "Insumos" ? "brightness-0 invert" : ""
                   }`}
@@ -141,8 +141,8 @@ export default function ProductosPage() {
                 <Image
                   src="/assets/images/equipos.webp"
                   alt="Equipos Icon"
-                  width={500}
-                  height={500}
+                  width={256}
+                  height={256}
                   className={`w-full h-full object-contain ${
                     selectedCategory === "Equipos" ? "brightness-0 invert" : ""
                   }`}
@@ -188,6 +188,7 @@ export default function ProductosPage() {
                           src="/assets/icons/productos/lente_intraocular.png"
                           alt="Lente Intraocular"
                           fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                           className="group-hover:brightness-0 group-hover:invert object-contain transition-all duration-300"
                         />
                       </div>
@@ -204,6 +205,7 @@ export default function ProductosPage() {
                             src={product.icon}
                             alt={product.name}
                             fill
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                             className="group-hover:brightness-0 group-hover:invert object-contain"
                           />
                         </div>
@@ -225,6 +227,7 @@ export default function ProductosPage() {
                           src={product.icon}
                           alt={product.name}
                           fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                           className="group-hover:brightness-0 group-hover:invert object-contain"
                         />
                       </div>
@@ -244,6 +247,7 @@ export default function ProductosPage() {
                           src={product.icon}
                           alt={product.name}
                           fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                           className="group-hover:brightness-0 group-hover:invert object-contain"
                         />
                       </div>

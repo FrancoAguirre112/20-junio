@@ -64,15 +64,15 @@ export default function Navbar() {
             <Image
               src={"/assets/icons/Logo-1.png"}
               alt="20 de junio"
-              height={1000}
-              width={1000}
+              height={128}
+              width={128}
               className="w-1/3 object-contain"
             />
             <Image
               src={"/assets/icons/Logo-2.png"}
               alt="20 de junio"
-              height={1000}
-              width={1000}
+              height={256}
+              width={256}
               className={`w-2/3 object-contain ${
                 useSolidNavbar ? "" : "invert brightness-0"
               }`}
@@ -127,15 +127,15 @@ export default function Navbar() {
                     <Image
                       src={"/assets/icons/Logo-1.png"}
                       alt="20 de junio"
-                      height={1000}
-                      width={1000}
+                      height={128}
+                      width={128}
                       className="w-1/3"
                     />
                     <Image
                       src={"/assets/icons/Logo-2.png"}
                       alt="20 de junio"
-                      height={1000}
-                      width={1000}
+                      height={256}
+                      width={256}
                     />
                   </div>
                 </Link>

@@ -51,7 +51,7 @@ export default function SaludVisualPage() {
     <div className="bg-gray-50 min-h-screen">
       <main className="mt-20">
         {/* Encabezado de la página */}
-        <header className="flex justify-center items-center bg-[url(/assets/images/clouds.png)] py-10">
+        <header className="flex justify-center items-center bg-[url(/assets/images/clouds.webp)] py-10">
           <div className="bg-white p-5 rounded-lg">
             <h1 className="mb-4 font-bold text-gray-800 text-2xl md:text-3xl">
               Visión saludable
@@ -81,6 +81,7 @@ export default function SaludVisualPage() {
                     src={post.frontmatter.coverImage}
                     alt={`Imagen de portada para ${post.frontmatter.title}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     style={{ objectFit: "cover" }}
                     className="group-hover:scale-105 transition-transform duration-300"
                   />

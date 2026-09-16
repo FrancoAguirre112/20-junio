@@ -25,8 +25,8 @@ const FloatingWhatsapp = () => {
       <Image
         src={"/assets/icons/whatsapp.png"}
         alt="Contactar por whatsapp"
-        width={250}
-        height={250}
+        width={64}
+        height={64}
         className="w-15"
       />
 

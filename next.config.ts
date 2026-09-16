@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    // Optimized variants stay in the edge cache for a year instead of 4h,
+    // so repeat views don't re-hit the optimizer.
+    minimumCacheTTL: 31536000,
+    // Trimmed from the defaults (8 device + 7 image widths). Fewer candidate
+    // widths = fewer distinct /_next/image objects to generate and cache.
+    deviceSizes: [640, 828, 1200, 1920],
+    imageSizes: [64, 128, 256, 384],
+  },
   async headers() {
     return [
       {
@@ -46,6 +55,16 @@ const nextConfig: NextConfig = {
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=(), fullscreen=(self)",
+          },
+        ],
+      },
+      {
+        // Content-addressed by filename: rename the file when you change it.
+        source: "/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },

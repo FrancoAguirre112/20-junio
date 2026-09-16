@@ -104,8 +104,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
                     <Image
                       src={product.icon}
                       alt={`${product.name} icon`}
-                      width={500}
-                      height={500}
+                      width={384}
+                      height={384}
                       className="flex-shrink-0 w-full"
                     />
                   </div>

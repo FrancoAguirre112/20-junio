@@ -26,12 +26,12 @@ import Fade from "embla-carousel-fade";
 import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 
-import eye1 from "@/public/assets/images/banner1.png";
-import eye2 from "@/public/assets/images/banner2.png";
-import eye3 from "@/public/assets/images/banner3.png";
-import eye4 from "@/public/assets/images/banner4.png";
-import eye5 from "@/public/assets/images/banner5.png";
-import eye6 from "@/public/assets/images/banner6.png";
+import eye1 from "@/public/assets/images/banner1.webp";
+import eye2 from "@/public/assets/images/banner2.webp";
+import eye3 from "@/public/assets/images/banner3.webp";
+import eye4 from "@/public/assets/images/banner4.webp";
+import eye5 from "@/public/assets/images/banner5.webp";
+import eye6 from "@/public/assets/images/banner6.webp";
 
 const slugify = (text: string) => {
   return text

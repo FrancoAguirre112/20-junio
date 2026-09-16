@@ -58,8 +58,8 @@ export default function Footer() {
                 <Image
                   src={"/assets/icons/Logo.webp"}
                   alt="20 de junio"
-                  height={1000}
-                  width={1000}
+                  height={256}
+                  width={256}
                   className=""
                 />
               </div>
